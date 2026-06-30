@@ -28,7 +28,7 @@ public class Categoria {
 	private Long id;
 	
 	@NotBlank(message = "Nome dever ser informado")
-	@NotEmpty(message = "Nome não pode ser nulo")
+	@NotNull(message = "Nome não pode ser nulo")
 	@Column(nullable = false)
 	private String nome;
 	
