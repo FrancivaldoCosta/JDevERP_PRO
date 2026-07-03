@@ -35,4 +35,6 @@ public class RoleUsuario {
 	private Usuario usuario;
 	
 	
+	
+	
 }
