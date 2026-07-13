@@ -24,8 +24,8 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "cliente_funcionario", uniqueConstraints = {
-		@UniqueConstraint(name = "unique_pessoa_usuario", columnNames = {"usuario_id","pessoa_id"})
-		@UniqueConstraint(name = "unique_usuario", columnNames = {"usuario_id"})
+		@UniqueConstraint(name = "unique_pessoa_usuario", columnNames = {"usuario_id","pessoa_id"}),
+		@UniqueConstraint(name = "unique_usuario", columnNames = {"usuario_id"}),
 		@UniqueConstraint(name = "unique_pessoa", columnNames = {"pessoa_id"})
 })
 @SequenceGenerator(name = "seq_cliente_funcionario", sequenceName = "seq_cliente_funcionario", allocationSize = 1, initialValue = 1)
