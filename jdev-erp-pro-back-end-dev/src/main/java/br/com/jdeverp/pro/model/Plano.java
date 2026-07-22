@@ -58,6 +58,7 @@ public class Plano {
 	private Integer limiteCliente;
 	
 	@NotNull(message = "Tipo do plano não pode ser nulo")
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private TipoPlano tipoPlano;
 

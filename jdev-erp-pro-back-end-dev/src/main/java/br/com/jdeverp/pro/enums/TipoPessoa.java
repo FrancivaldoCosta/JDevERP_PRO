@@ -2,16 +2,14 @@ package br.com.jdeverp.pro.enums;
 
 public enum TipoPessoa {
 
-	PESSOA_FISICA("Plano Gratuito"), 
-	PESSOA_JURIDICA("Pessoa Jurídica");
+	JURIDICA("Jurídica"), FISICA("Fisíca");
 
-	
 	private final String descricao;
-	
+
 	private TipoPessoa(String descricao) {
 		this.descricao = descricao;
 	}
-	
+
 	public String getDescricao() {
 		return descricao;
 	}
