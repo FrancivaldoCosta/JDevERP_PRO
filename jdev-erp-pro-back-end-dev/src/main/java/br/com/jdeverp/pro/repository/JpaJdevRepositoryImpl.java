@@ -1,8 +1,10 @@
 package br.com.jdeverp.pro.repository;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
@@ -86,11 +88,31 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 
 	@Override
 	public Page<T> listarPaginado(Long empresaId, Pageable pageable) {
-		return null;
+		
+		
+		String entidade = domainClass.getSimpleName();
+		boolean possuiEmpresa = possuiEmpresa();
+		
+		String jpql = "from " + entidade;
+		
+		if (possuiEmpresa) {
+			jpql += " Where empresa.id = :empresaId";
+		}
+		
+		TypedQuery<T> query = entityManager.createQuery(jpql, domainClass); 
+		
+		if (possuiEmpresa) {
+			query.setParameter("empresaId", empresaId);
+		}
+		
+		List<T> list = query.setFirstResult((int)pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
+		
+		return new PageImpl<T>(list, pageable, total(empresaId));
 	}
 
 	@Override
 	public long total(Long empresaId) {
+		
 		String entidade = domainClass.getSimpleName();
 		boolean possuiEmpresa = possuiEmpresa();
 		
