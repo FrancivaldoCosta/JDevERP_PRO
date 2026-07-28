@@ -2,10 +2,13 @@ package br.com.jdeverp.pro.repository;
 
 import java.io.Serializable;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
 public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID>
 		implements JpaJdevRepository<T, ID> {
@@ -14,8 +17,8 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 	private final EntityManager entityManager; /* É o nucleo da persistencia do JPA */
 
 	/**
-	 * Cria uma nova instância do repositório genérico utilizando apenas a classe
-	 * da entidade e o {@link EntityManager}.
+	 * Cria uma nova instância do repositório genérico utilizando apenas a classe da
+	 * entidade e o {@link EntityManager}.
 	 *
 	 * <p>
 	 * Este construtor é responsável por inicializar a implementação base do
@@ -30,9 +33,9 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 	 * personalizados implementados nesta classe.
 	 * </p>
 	 *
-	 * @param domainClass Classe da entidade JPA que será manipulada pelo
-	 *                    repositório. É utilizada para identificar o tipo da
-	 *                    entidade durante operações genéricas.
+	 * @param domainClass   Classe da entidade JPA que será manipulada pelo
+	 *                      repositório. É utilizada para identificar o tipo da
+	 *                      entidade durante operações genéricas.
 	 *
 	 * @param entityManager Gerenciador de persistência do JPA responsável pela
 	 *                      comunicação com o banco de dados. Permite executar
@@ -40,9 +43,9 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 	 *                      controlar o contexto de persistência.
 	 */
 	public JpaJdevRepositoryImpl(Class<T> domainClass, EntityManager entityManager) {
-	    super(domainClass, entityManager);
-	    this.domainClass = domainClass;
-	    this.entityManager = entityManager;
+		super(domainClass, entityManager);
+		this.domainClass = domainClass;
+		this.entityManager = entityManager;
 	}
 
 	/**
@@ -56,11 +59,11 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 	 * </p>
 	 *
 	 * <ul>
-	 *     <li>Classe da entidade.</li>
-	 *     <li>Tipo da chave primária.</li>
-	 *     <li>Campo anotado com {@code @Id}.</li>
-	 *     <li>Estratégia de geração do identificador.</li>
-	 *     <li>Metadados utilizados internamente pelo Spring Data JPA.</li>
+	 * <li>Classe da entidade.</li>
+	 * <li>Tipo da chave primária.</li>
+	 * <li>Campo anotado com {@code @Id}.</li>
+	 * <li>Estratégia de geração do identificador.</li>
+	 * <li>Metadados utilizados internamente pelo Spring Data JPA.</li>
 	 * </ul>
 	 *
 	 * <p>
@@ -71,14 +74,48 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 	 * @param entityInformation Objeto contendo todos os metadados da entidade
 	 *                          gerenciados pelo Spring Data JPA.
 	 *
-	 * @param entityManager Gerenciador de persistência responsável pelas operações
-	 *                      de acesso ao banco de dados.
+	 * @param entityManager     Gerenciador de persistência responsável pelas
+	 *                          operações de acesso ao banco de dados.
 	 */
 	public JpaJdevRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
 
-	    super(entityInformation, entityManager);
-	    this.domainClass = entityInformation.getJavaType();
-	    this.entityManager = entityManager;
+		super(entityInformation, entityManager);
+		this.domainClass = entityInformation.getJavaType();
+		this.entityManager = entityManager;
+	}
+
+	@Override
+	public Page<T> listarPaginado(Long empresaId, Pageable pageable) {
+		return null;
+	}
+
+	@Override
+	public long total(Long empresaId) {
+		String entidade = domainClass.getSimpleName();
+		boolean possuiEmpresa = possuiEmpresa();
+		
+		String jpql = "select count(*) from " + entidade;
+		
+		if (possuiEmpresa) {
+			jpql += " Where empresa.id = :empresaId";
+		}
+		
+		TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class); 
+		
+		if (possuiEmpresa) {
+			query.setParameter("empresaId", empresaId);
+		}
+		
+		return query.getSingleResult();
+	}
+
+	private boolean possuiEmpresa() {
+		try {
+			return domainClass.getDeclaredField("empresa") != null;
+		} catch (NoSuchFieldException e) {
+			return false;
+		}
+
 	}
 
 }
