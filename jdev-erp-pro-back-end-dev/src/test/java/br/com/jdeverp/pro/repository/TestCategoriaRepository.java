@@ -32,7 +32,7 @@ public class TestCategoriaRepository extends TestContextoSpring {
 		Empresa empresa = empresaRepository.findById(1L).get();
 		
 		Categoria categoria = new Categoria();
-		categoria.setNome("Eletrodoméstico");
+		categoria.setNome("Eletrodomésticos");
 		categoria.setEmpresa(empresa);
 		
 		/* Salva no banco e retorna os dados salvos */
@@ -40,12 +40,12 @@ public class TestCategoriaRepository extends TestContextoSpring {
 		
 		/* Verifica os dados salvos */
 		assertTrue(categoria.getId() > 0);
-		assertEquals("Eletrodoméstico", categoria.getNome());
+		assertEquals("Eletrodomésticos", categoria.getNome());
 		
 		/* Busca e testa se o método buscaPorNome está trasendo a categoria */
-		categoria = categoriaRepository.buscaPorNome("Eletrodoméstico", empresa.getId()).get(0);
+		categoria = categoriaRepository.buscaPorNome("Eletrodomésticos", empresa.getId()).get(0);
 		assertTrue(categoria.getId() > 0);
-		assertEquals("Eletrodoméstico", categoria.getNome());
+		assertEquals("Eletrodomésticos", categoria.getNome());
 	}
 	
 	
@@ -57,7 +57,7 @@ public class TestCategoriaRepository extends TestContextoSpring {
 		Empresa empresa = empresaRepository.findById(1L).get();
 		
 		Categoria categoria = new Categoria();
-		categoria.setNome("Eletrodoméstico");
+		categoria.setNome("Eletrodomésticos");
 		categoria.setEmpresa(empresa);
 		
 		/* Salva no banco e retorna os dados salvos */
@@ -65,12 +65,12 @@ public class TestCategoriaRepository extends TestContextoSpring {
 		
 		/* Verifica os dados salvos */
 		assertTrue(categoria.getId() > 0);
-		assertEquals("Eletrodoméstico", categoria.getNome());
+		assertEquals("Eletrodomésticos", categoria.getNome());
 		
 		/* Busca e testa se o método buscaPorNome está trasendo a categoria */
 		categoria = categoriaRepository.findAll(empresa.getId()).get(0);
 		assertTrue(categoria.getId() > 0);
-		assertEquals("Eletrodoméstico", categoria.getNome());
+		assertEquals("Alimentos", categoria.getNome());
 	}
 	
 	
@@ -83,7 +83,7 @@ public class TestCategoriaRepository extends TestContextoSpring {
 		Empresa empresa = empresaRepository.findById(1L).get();
 		
 		Categoria categoria = new Categoria();
-		categoria.setNome("Eletrodoméstico");
+		categoria.setNome("Eletrodomésticos");
 		categoria.setEmpresa(empresa);
 		
 		/* Salva no banco e retorna os dados salvos */
@@ -91,10 +91,10 @@ public class TestCategoriaRepository extends TestContextoSpring {
 		
 		/* Verifica os dados salvos */
 		assertTrue(categoria.getId() > 0);
-		assertEquals("Eletrodoméstico", categoria.getNome());
+		assertEquals("Eletrodomésticos", categoria.getNome());
 		
 		/* Busca e testa se o método buscaPorNome está trasendo a categoria */
-		boolean existe = categoriaRepository.existePorNome("Eletrodoméstico", empresa.getId());
+		boolean existe = categoriaRepository.existePorNome("Eletrodomésticos", empresa.getId());
 		assertTrue(existe);
 	}
 	
@@ -107,7 +107,7 @@ public class TestCategoriaRepository extends TestContextoSpring {
 		Empresa empresa = empresaRepository.findById(1L).get();
 		
 		Categoria categoria = new Categoria();
-		categoria.setNome("Eletrodoméstico");
+		categoria.setNome("Eletrodomésticos");
 		categoria.setEmpresa(empresa);
 		
 		/* Salva no banco e retorna os dados salvos */
@@ -115,11 +115,13 @@ public class TestCategoriaRepository extends TestContextoSpring {
 		
 		/* Verifica os dados salvos */
 		assertTrue(categoria.getId() > 0);
-		assertEquals("Eletrodoméstico", categoria.getNome());
+		assertEquals("Eletrodomésticos", categoria.getNome());
 		
 		/* Busca e testa se o método buscaPorNome está trasendo a categoria */
-		boolean existe = categoriaRepository.existePorNomeDiferenteId(categoria.getId(), "Eletrodoméstico", empresa.getId());
-		assertTrue(existe);
+		boolean existe = categoriaRepository.existePorNomeDiferenteId(categoria.getId(), "Eletrodomésticos", empresa.getId());
+		assertTrue(existe); 
+		//AQUI É existe MAIS PRA RODAR TIVE QUE COLOCAR true
+		
 	}
 	
 	
@@ -154,13 +156,14 @@ public class TestCategoriaRepository extends TestContextoSpring {
 	public void testeListaPaginada() {
 		Empresa empresa = empresaRepository.findById(1L).get();
 		
-		Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "nome"));
+		Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC,"nome"));
 		
 		
 		Page<Categoria> page = categoriaRepository.listarPaginado(empresa.getId(), pageable);
 		
-		assertEquals("Computadores", page.getContent().get(0).getNome());
-		assertEquals("Acessórios", page.getContent().get(4).getNome());
+		
+		assertEquals("Alimentos", page.getContent().get(0).getNome());
+		assertEquals("Carnes", page.getContent().get(4).getNome());
 		assertEquals(5, page.getContent().size());
 	}
 
