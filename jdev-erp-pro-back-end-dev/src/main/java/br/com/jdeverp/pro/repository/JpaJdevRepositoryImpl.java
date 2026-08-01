@@ -100,19 +100,20 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		if (possuiEmpresa) {
 			jpql += " Where empresa.id = :empresaId";	
 		}
-				
+
+//TRECHO QUE DEU ERRO
 		
-//		if (pageable.getSort().isSorted()) {
-//			jpql += " order by ";
-//
-//			List<String> orders = new ArrayList<String>();
-//			for (Sort.Order order : pageable.getSort()) {
-//				orders.add(order.getProperty() + " " + order.getDirection().name());
-//
-//			}
-//
-//			jpql += String.join(",", orders);
-//		}
+		if (pageable.getSort().isSorted()) {
+			jpql += " order by ";
+
+			List<String> orders = new ArrayList<String>();
+			for (Sort.Order order : pageable.getSort()) {
+				orders.add(order.getProperty() + " " + order.getDirection().name());
+
+			}
+
+			jpql += String.join(", ", orders);
+		}
 		
 		
 		

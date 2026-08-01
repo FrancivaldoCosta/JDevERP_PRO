@@ -156,14 +156,15 @@ public class TestCategoriaRepository extends TestContextoSpring {
 	public void testeListaPaginada() {
 		Empresa empresa = empresaRepository.findById(1L).get();
 		
-		Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC,"nome"));
+
+//Prof usou o de baixo -> Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC,"nome"));
 		
-		
+		Pageable pageable = PageRequest.of(0, 5, Sort.by("nome"));
 		Page<Categoria> page = categoriaRepository.listarPaginado(empresa.getId(), pageable);
 		
 		
 		assertEquals("Alimentos", page.getContent().get(0).getNome());
-		assertEquals("Carnes", page.getContent().get(4).getNome());
+		assertEquals("Calçados", page.getContent().get(4).getNome());
 		assertEquals(5, page.getContent().size());
 	}
 
