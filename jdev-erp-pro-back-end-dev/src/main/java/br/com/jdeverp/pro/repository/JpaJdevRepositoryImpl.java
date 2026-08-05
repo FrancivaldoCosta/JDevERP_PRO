@@ -3,6 +3,7 @@ package br.com.jdeverp.pro.repository;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
 public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID>
@@ -19,6 +21,7 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 
 	private final Class<T> domainClass; /* Classe model ou entidade */
 	private final EntityManager entityManager; /* É o nucleo da persistencia do JPA */
+	private final boolean multiEmpresa;
 
 	/**
 	 * Cria uma nova instância do repositório genérico utilizando apenas a classe da
@@ -50,6 +53,7 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		super(domainClass, entityManager);
 		this.domainClass = domainClass;
 		this.entityManager = entityManager;
+		multiEmpresa = possuiEmpresa();
 	}
 
 	/**
@@ -86,18 +90,19 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		super(entityInformation, entityManager);
 		this.domainClass = entityInformation.getJavaType();
 		this.entityManager = entityManager;
+		multiEmpresa = possuiEmpresa();
 	}
 
 	@Override
 	public Page<T> listarPaginado(Long empresaId, Pageable pageable) {
 		
 		
+		
 		String entidade = domainClass.getSimpleName();
-		boolean possuiEmpresa = possuiEmpresa();
 		
 		String jpql = "from " + entidade;
 		
-		if (possuiEmpresa) {
+		if (multiEmpresa) {
 			jpql += " Where empresa.id = :empresaId";	
 		}
 
@@ -119,7 +124,7 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		
 		TypedQuery<T> query = entityManager.createQuery(jpql, domainClass); 
 		
-		if (possuiEmpresa) {
+		if (multiEmpresa) {
 			query.setParameter("empresaId", empresaId);
 		}
 		
@@ -132,17 +137,16 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 	public long total(Long empresaId) {
 		
 		String entidade = domainClass.getSimpleName();
-		boolean possuiEmpresa = possuiEmpresa();
 		
 		String jpql = "select count(*) from " + entidade;
 		
-		if (possuiEmpresa) {
+		if (multiEmpresa) {
 			jpql += " Where empresa.id = :empresaId";
 		}
 		
 		TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class); 
 		
-		if (possuiEmpresa) {
+		if (multiEmpresa) {
 			query.setParameter("empresaId", empresaId);
 		}
 		
@@ -156,6 +160,55 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 			return false;
 		}
 
+	}
+
+	@Override
+	public Optional<T> buscarPorId(ID id, Long empresaId) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
+	@Override
+	public List<T> listar(Long empresaId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean existeById(ID id, Long empresaId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public List<T> buscarPorIds(Iterable<ID> ids, Long empresaId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deletarAllById(Iterable<ID> ids, Long empresaId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public long deleteAll(Long empresaID) {
+
+		String jpql = "delete from " + domainClass.getSimpleName();
+		if (multiEmpresa) {
+			jpql += " where empresa.id = :empresaId";
+		}
+		
+		
+		Query query = entityManager.createQuery(jpql);
+		
+		if (multiEmpresa) {
+			query.setParameter("empresa.id", empresaID);
+		}
+		
+		
+		return query.executeUpdate();
 	}
 
 }
