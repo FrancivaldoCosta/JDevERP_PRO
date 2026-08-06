@@ -2,9 +2,11 @@ package br.com.jdeverp.pro.repository;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -95,19 +97,17 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 
 	@Override
 	public Page<T> listarPaginado(Long empresaId, Pageable pageable) {
-		
-		
-		
+
 		String entidade = domainClass.getSimpleName();
-		
+
 		String jpql = "from " + entidade;
-		
+
 		if (multiEmpresa) {
-			jpql += " Where empresa.id = :empresaId";	
+			jpql += " Where empresa.id = :empresaId";
 		}
 
 //TRECHO QUE DEU ERRO
-		
+
 		if (pageable.getSort().isSorted()) {
 			jpql += " order by ";
 
@@ -119,37 +119,36 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 
 			jpql += String.join(", ", orders);
 		}
-		
-		
-		
-		TypedQuery<T> query = entityManager.createQuery(jpql, domainClass); 
-		
+
+		TypedQuery<T> query = entityManager.createQuery(jpql, domainClass);
+
 		if (multiEmpresa) {
 			query.setParameter("empresaId", empresaId);
 		}
-		
-		List<T> lista = query.setFirstResult((int)pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
-		
+
+		List<T> lista = query.setFirstResult((int) pageable.getOffset()).setMaxResults(pageable.getPageSize())
+				.getResultList();
+
 		return new PageImpl<T>(lista, pageable, total(empresaId));
 	}
 
 	@Override
 	public long total(Long empresaId) {
-		
+
 		String entidade = domainClass.getSimpleName();
-		
+
 		String jpql = "select count(*) from " + entidade;
-		
+
 		if (multiEmpresa) {
 			jpql += " Where empresa.id = :empresaId";
 		}
-		
-		TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class); 
-		
+
+		TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
+
 		if (multiEmpresa) {
 			query.setParameter("empresaId", empresaId);
 		}
-		
+
 		return query.getSingleResult();
 	}
 
@@ -182,14 +181,45 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 
 	@Override
 	public List<T> buscarPorIds(Iterable<ID> ids, Long empresaId) {
-		// TODO Auto-generated method stub
-		return null;
+
+		if (IterableUtils.isEmpty(ids)) {
+			return Collections.emptyList();
+
+		}
+
+		String jpql = "from " + domainClass.getSimpleName() + " where id in :ids";
+
+		if (multiEmpresa) {
+			jpql += " and empresa.id = :empresaId";
+		}
+
+		TypedQuery<T> query = entityManager.createQuery(jpql, domainClass);
+		query.setParameter("ids", ids);
+
+		if (multiEmpresa) {
+			query.setParameter("empresa.id", empresaId);
+		}
+
+		return query.getResultList();
 	}
 
 	@Override
 	public void deletarAllById(Iterable<ID> ids, Long empresaId) {
-		// TODO Auto-generated method stub
-		
+
+		String jpql = "delete from " + domainClass.getSimpleName() + " where id in :ids";
+		if (multiEmpresa) {
+			jpql += " and empresa.id = :empresaId";
+		}
+
+		Query query = entityManager.createQuery(jpql);
+		query.setParameter("ids", ids);
+
+		if (multiEmpresa) {
+			query.setParameter("empresa.id", empresaId);
+		}
+
+		query.executeUpdate();
+
 	}
 
 	@Override
@@ -199,15 +229,13 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		if (multiEmpresa) {
 			jpql += " where empresa.id = :empresaId";
 		}
-		
-		
+
 		Query query = entityManager.createQuery(jpql);
-		
+
 		if (multiEmpresa) {
 			query.setParameter("empresa.id", empresaID);
 		}
-		
-		
+
 		return query.executeUpdate();
 	}
 
