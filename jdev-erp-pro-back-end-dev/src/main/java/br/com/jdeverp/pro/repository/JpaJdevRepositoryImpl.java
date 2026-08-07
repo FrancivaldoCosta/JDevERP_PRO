@@ -21,6 +21,7 @@ import jakarta.persistence.TypedQuery;
 public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID>
 		implements JpaJdevRepository<T, ID> {
 
+	private static final String MSG_BLOQUEIO_QUERY = "Use ou crie um método que tenha o empresa.id incluída para a separação dos dados por empresa e ativar o multitenent.";
 	private final Class<T> domainClass; /* Classe model ou entidade */
 	private final EntityManager entityManager; /* É o nucleo da persistencia do JPA */
 	private final boolean multiEmpresa;
@@ -163,20 +164,62 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 
 	@Override
 	public Optional<T> buscarPorId(ID id, Long empresaId) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+
+		String jpql = "from " + domainClass.getSimpleName() + " where id :id";
+
+		if (multiEmpresa) {
+			jpql += " and empresa.id = :empresaId";
+		}
+
+		TypedQuery<T> query = entityManager.createQuery(jpql, domainClass);
+		query.setParameter("id", id);
+
+		if (multiEmpresa) {
+			query.setParameter("empresa.id", empresaId);
+		}
+
+		return query.getResultStream().findFirst();
 	}
 
 	@Override
 	public List<T> listar(Long empresaId) {
-		// TODO Auto-generated method stub
-		return null;
+
+
+		String jpql = "from " + domainClass.getSimpleName();
+
+		if (multiEmpresa) {
+			jpql += " where empresa.id = :empresaId";
+		}
+
+		TypedQuery<T> query = entityManager.createQuery(jpql, domainClass);
+
+		if (multiEmpresa) {
+			query.setParameter("empresa.id", empresaId);
+		}
+
+		return query.getResultList();
+		
 	}
 
 	@Override
 	public boolean existeById(ID id, Long empresaId) {
-		// TODO Auto-generated method stub
-		return false;
+
+		String jpql = "select 1 from " + domainClass.getSimpleName() + " e where e.id = :id";
+		
+		if (multiEmpresa) {
+			jpql += " and e.empresa.id = :empresaId";
+		}
+		
+		TypedQuery<Integer> query = entityManager.createQuery(jpql, Integer.class);
+		query.setParameter("id", id);
+		
+		if (multiEmpresa) {
+			query.setParameter("empresa.id", empresaId);
+		}
+		
+		query.setMaxResults(1);
+				
+		return !query.getResultList().isEmpty();
 	}
 
 	@Override
@@ -237,6 +280,23 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		}
 
 		return query.executeUpdate();
+	}
+	
+	@Override
+	    public List<T> findAll() {
+
+		validar("findAll");
+		
+		return super.findAll();
+	    }
+
+	private void validar(String metodo) {
+
+		if (multiEmpresa) {
+			throw new UnsupportedOperationException("o método: " + metodo + " não pode ser usado. " + MSG_BLOQUEIO_QUERY);
+		}
+		
+		
 	}
 
 }

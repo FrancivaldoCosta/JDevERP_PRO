@@ -143,7 +143,7 @@ public class TestCategoriaRepository extends TestContextoSpring {
 	}
 	
 	@Test
-	public void testeListaPaginada() {
+	public void testListaPaginada() {
 		Empresa empresa = empresaRepository.findById(1L).get();
 		
 		Pageable pageable = PageRequest.of(0, 5, Sort.by("nome"));
@@ -157,13 +157,13 @@ public class TestCategoriaRepository extends TestContextoSpring {
 	}
 	
 	
-//	@Test
-//	public void testFindAll() {
-//		
-//		assertThrows(UnsupportedOperationException.class, () ->{
-//			categoriaRepository.findAll();
-//		});
-//	}
+	@Test
+	public void testFindAll() {
+		
+		assertThrows(UnsupportedOperationException.class, () ->{
+			categoriaRepository.findAll();
+		});
+	}
 
 
 }
