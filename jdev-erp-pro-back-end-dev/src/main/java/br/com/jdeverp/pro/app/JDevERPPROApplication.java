@@ -47,6 +47,10 @@ public class JDevERPPROApplication {
 		TimeZone sp = TimeZone.getTimeZone("America/Sao_Paulo");
 		TimeZone.setDefault(sp);
 		Calendar.getInstance().setTimeZone(sp);
+		
+		
 	}
+	
+	
 
 }
