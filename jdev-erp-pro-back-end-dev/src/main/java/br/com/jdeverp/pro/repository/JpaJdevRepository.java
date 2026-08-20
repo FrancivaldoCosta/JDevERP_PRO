@@ -21,7 +21,7 @@ public interface JpaJdevRepository<T, ID> extends JpaRepository<T, ID> {
 	
 	List<T> listar(Long empresaId);
 	
-	boolean existeById(ID id, Long empresaId);
+	boolean existsById(ID id, Long empresaId);
 	
 	
 	List<T> buscarPorIds(Iterable<ID> ids, Long empresaId); 

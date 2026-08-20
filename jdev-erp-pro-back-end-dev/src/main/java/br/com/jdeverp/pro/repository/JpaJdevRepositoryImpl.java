@@ -207,7 +207,7 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 	}
 
 	@Override
-	public boolean existeById(ID id, Long empresaId) {
+	public boolean existsById(ID id, Long empresaId) {
 
 		String jpql = "select 1 from " + domainClass.getSimpleName() + " e where e.id = :id";
 		

@@ -1,8 +1,81 @@
+//package br.com.jdeverp.pro.service;
+//
+//import java.util.List;
+//
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Service;
+//
+//import br.com.jdeverp.pro.model.MovimentacaoProduto;
+//import br.com.jdeverp.pro.repository.MovimentacaoProdutoRepository;
+//import jakarta.persistence.EntityManager;
+//import jakarta.persistence.PersistenceContext;
+//
+//@Service
+//public class MovimentacaoProdutoService {
+//
+//    @Autowired
+//    private MovimentacaoProdutoRepository movimentacaoProdutoRepository;
+//
+//    @PersistenceContext
+//    private EntityManager entityManager;
+//
+//    public List<MovimentacaoProduto> findAll(Long idEmpresa) {
+//        return movimentacaoProdutoRepository.findAll(idEmpresa);
+//    }
+//
+//    List<MovimentacaoProduto> buscaPorNome(String nome, Long idEmpresa) {
+//        return movimentacaoProdutoRepository.buscaPorNome(nome, idEmpresa);
+//    }
+//
+//    boolean existePorNome(String nome, Long idEmpresa) {
+//        return movimentacaoProdutoRepository.existePorNome(nome, idEmpresa);
+//    }
+//
+//    boolean existePorNomeDiferenteId(Long id, String nome, Long idEmpresa) {
+//        return movimentacaoProdutoRepository.existePorNomeDiferenteId(id, nome, idEmpresa);
+//    }
+//
+//    void deleteById(Long id, Long idEmpresa) {
+//        movimentacaoProdutoRepository.deleteById(id, idEmpresa);
+//    }
+//
+//    public List<MovimentacaoProduto> findAllByPedido(Long idPedido, Long idEmpresa) {
+//        return movimentacaoProdutoRepository.findAllByPedido(idPedido, idEmpresa);
+//    }
+//
+//    List<MovimentacaoProduto> buscaPorNomeByPedido(String nome, Long idPedido, Long idEmpresa) {
+//        return movimentacaoProdutoRepository.buscaPorNomeByPedido(nome, idPedido, idEmpresa);
+//    }
+//
+//    boolean existePorNomeByPedido(String nome, Long idPedido, Long idEmpresa) {
+//        return movimentacaoProdutoRepository.existePorNomeByPedido(nome, idPedido, idEmpresa);
+//    }
+//
+//    boolean existePorNomeDiferenteIdByPedido(Long id, String nome, Long idPedido, Long idEmpresa) {
+//        return movimentacaoProdutoRepository.existePorNomeDiferenteIdByPedido(id, nome, idPedido, idEmpresa);
+//    }
+//
+//    void deleteByIdAndPedido(Long id, Long idPedido, Long idEmpresa) {
+//        movimentacaoProdutoRepository.deleteByIdAndPedido(id, idPedido, idEmpresa);
+//    }
+//
+//}
+
+
+
+//***************************
+
+
+
+
 package br.com.jdeverp.pro.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.jdeverp.pro.model.MovimentacaoProduto;
@@ -10,53 +83,103 @@ import br.com.jdeverp.pro.repository.MovimentacaoProdutoRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+/*O QUE É O SERVICE
+ * Dentro do service vc pode criar infinitos métodos, gerar grafico, api de pagamento, gerar relatorio e etc*/
+
 @Service
 public class MovimentacaoProdutoService {
 
-    @Autowired
-    private MovimentacaoProdutoRepository movimentacaoProdutoRepository;
+	@Autowired /* Injeção de dependência */
+	private MovimentacaoProdutoRepository movimentacaoProdutoRepository;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+	/*Posso escrever query customizadas e dinâmicas, mais complexas do que no Repository*/
+	@PersistenceContext
+	private EntityManager entityManager;
 
-    public List<MovimentacaoProduto> findAll(Long idEmpresa) {
-        return movimentacaoProdutoRepository.findAll(idEmpresa);
-    }
+	public List<MovimentacaoProduto> findAll(Long idEmpresa) {
+		
+		return movimentacaoProdutoRepository.findAll(idEmpresa);
+	}
 
-    List<MovimentacaoProduto> buscaPorNome(String nome, Long idEmpresa) {
-        return movimentacaoProdutoRepository.buscaPorNome(nome, idEmpresa);
-    }
+	public List<MovimentacaoProduto> buscaPorNome(String nome, Long idEmpresa) {
+		return movimentacaoProdutoRepository.buscaPorNome(nome, idEmpresa);
+	}
 
-    boolean existePorNome(String nome, Long idEmpresa) {
-        return movimentacaoProdutoRepository.existePorNome(nome, idEmpresa);
-    }
+	public boolean existePorNome(String nome, Long idEmpresa) {
+		return movimentacaoProdutoRepository.existePorNome(nome, idEmpresa);
+	}
 
-    boolean existePorNomeDiferenteId(Long id, String nome, Long idEmpresa) {
-        return movimentacaoProdutoRepository.existePorNomeDiferenteId(id, nome, idEmpresa);
-    }
+	public boolean existePorNomeDiferenteId(Long id, String nome, Long idEmpresa) {
+		return movimentacaoProdutoRepository.existePorNomeDiferenteId(id, nome, idEmpresa);
+	}
 
-    void deleteById(Long id, Long idEmpresa) {
-        movimentacaoProdutoRepository.deleteById(id, idEmpresa);
-    }
+	public void deleteById(Long id, Long idEmpresa) {
+		movimentacaoProdutoRepository.deleteById(id, idEmpresa);
+	}
 
-    public List<MovimentacaoProduto> findAllByPedido(Long idPedido, Long idEmpresa) {
-        return movimentacaoProdutoRepository.findAllByPedido(idPedido, idEmpresa);
-    }
+	public long deleteAll(Long empresaID) {
+		return movimentacaoProdutoRepository.deleteAll(empresaID);
+	}
 
-    List<MovimentacaoProduto> buscaPorNomeByPedido(String nome, Long idPedido, Long idEmpresa) {
-        return movimentacaoProdutoRepository.buscaPorNomeByPedido(nome, idPedido, idEmpresa);
-    }
+	void deletarAllById(Iterable<Long> ids, Long empresaId) {
+		movimentacaoProdutoRepository.deletarAllById(ids, empresaId);
+	}
 
-    boolean existePorNomeByPedido(String nome, Long idPedido, Long idEmpresa) {
-        return movimentacaoProdutoRepository.existePorNomeByPedido(nome, idPedido, idEmpresa);
-    }
+	public List<MovimentacaoProduto> buscarPorIds(Iterable<Long> ids, Long empresaId) {
+		return movimentacaoProdutoRepository.buscarPorIds(ids, empresaId);
+	}
 
-    boolean existePorNomeDiferenteIdByPedido(Long id, String nome, Long idPedido, Long idEmpresa) {
-        return movimentacaoProdutoRepository.existePorNomeDiferenteIdByPedido(id, nome, idPedido, idEmpresa);
-    }
+	boolean existsById(Long id, Long empresaId) {
+		return movimentacaoProdutoRepository.existsById(id, empresaId);
+	}
 
-    void deleteByIdAndPedido(Long id, Long idPedido, Long idEmpresa) {
-        movimentacaoProdutoRepository.deleteByIdAndPedido(id, idPedido, idEmpresa);
-    }
+	public List<MovimentacaoProduto> listar(Long empresaId) {
+		return movimentacaoProdutoRepository.listar(empresaId);
+	}
+
+	public Optional<MovimentacaoProduto> buscarPorId(Long id, Long empresaId) {
+		return movimentacaoProdutoRepository.buscarPorId(id, empresaId);
+	}
+
+	public long total(Long empresaId) {
+		return movimentacaoProdutoRepository.total(empresaId);
+	}
+
+	public Page<MovimentacaoProduto> listarPaginado(Long empresaId, Pageable pageable) {
+		return movimentacaoProdutoRepository.listarPaginado(empresaId, pageable);
+	}
+
+	// ====================Métodos específicos para Pedido====================
+
+	public List<MovimentacaoProduto> findAllByPedido(Long idPedido, Long idEmpresa) {
+		return movimentacaoProdutoRepository.findAllByPedido(idPedido, idEmpresa);
+	}
+
+	public List<MovimentacaoProduto> buscaPorNomeByPedido(String nome, Long idPedido, Long idEmpresa) {
+		return movimentacaoProdutoRepository.buscaPorNomeByPedido(nome, idPedido, idEmpresa);
+	}
+
+	public boolean existePorNomeByPedido(String nome, Long idPedido, Long idEmpresa) {
+		return movimentacaoProdutoRepository.existePorNomeByPedido(nome, idPedido, idEmpresa);
+	}
+
+	public boolean existePorNomeDiferenteIdByPedido(Long id, String nome, Long idPedido, Long idEmpresa) {
+		return movimentacaoProdutoRepository.existePorNomeDiferenteIdByPedido(id, nome, idPedido, idEmpresa);
+	}
+
+	public void deleteByIdAndPedido(Long id, Long idPedido, Long idEmpresa) {
+		movimentacaoProdutoRepository.deleteByIdAndPedido(id, idPedido, idEmpresa);
+	}
+
+	// ====================dentro dos métodos do
+	// service===============================
+
+	// Verificar se está em uso
+	// Realizar um consulta com integração para saber se pode deletar
+	// Fazer copia e backup
+	// Fazer inumeras validações de regra de negocio
+	// Fazer validações
+	// Lançar exeções
+	// Escrever regras de negócio
 
 }

@@ -1,3 +1,56 @@
+//package br.com.jdeverp.pro.service;
+//
+//import java.util.List;
+//
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Service;
+//
+//import br.com.jdeverp.pro.model.Role;
+//import br.com.jdeverp.pro.repository.RoleRepository;
+//import jakarta.persistence.EntityManager;
+//import jakarta.persistence.PersistenceContext;
+//
+//@Service
+//public class RoleService {
+//
+//    @Autowired /* Injeção de depência */
+//    private RoleRepository roleRepository;
+//    
+//    /*Posso escrever query customizadas e dinâmicas, mais complexas do que no Repository*/
+//    @PersistenceContext
+//    private EntityManager entityManager;
+//    
+//
+//    /* Os métodos do service serão chamador pelo Controller */
+//    public List<Role> findAll() {
+//        return roleRepository.findAll();
+//    }
+//
+//    List<Role> buscaPorAcesso(String acesso) {
+//        return roleRepository.buscaPorAcesso(acesso);
+//    }
+//
+//    boolean existePorAcesso(String acesso) {
+//        return roleRepository.existePorAcesso(acesso);
+//    }
+//
+//    boolean existePorAcessoDiferenteId(Long id, String acesso) {
+//        return roleRepository.existePorAcessoDiferenteId(id, acesso);
+//    }
+//
+//    void deleteById(Long id) {
+//        roleRepository.deleteById(id);
+//    }
+//
+//}
+
+
+
+//**********************
+
+
+
+
 package br.com.jdeverp.pro.service;
 
 import java.util.List;
@@ -10,36 +63,51 @@ import br.com.jdeverp.pro.repository.RoleRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+/*O QUE É O SERVICE
+ * Dentro do service vc pode criar infinitos métodos, gerar grafico, api de pagamento, gerar relatorio e etc*/
+
 @Service
 public class RoleService {
 
-    @Autowired /* Injeção de depência */
-    private RoleRepository roleRepository;
-    
-    /*Posso escrever query customizadas e dinâmicas, mais complexas do que no Repository*/
-    @PersistenceContext
-    private EntityManager entityManager;
-    
+	@Autowired /* Injeção de dependência */
+	private RoleRepository roleRepository;
 
-    /* Os métodos do service serão chamador pelo Controller */
-    public List<Role> findAll() {
-        return roleRepository.findAll();
-    }
+	/*Posso escrever query customizadas e dinâmicas, mais complexas do que no Repository*/
+	@PersistenceContext
+	private EntityManager entityManager;
 
-    List<Role> buscaPorAcesso(String acesso) {
-        return roleRepository.buscaPorAcesso(acesso);
-    }
+	public List<Role> findAll() {
+		
+		return roleRepository.findAll();
+	}
 
-    boolean existePorAcesso(String acesso) {
-        return roleRepository.existePorAcesso(acesso);
-    }
+	public List<Role> buscaPorAcesso(String acesso) {
+		return roleRepository.buscaPorAcesso(acesso);
+	}
 
-    boolean existePorAcessoDiferenteId(Long id, String acesso) {
-        return roleRepository.existePorAcessoDiferenteId(id, acesso);
-    }
+	public boolean existePorAcesso(String acesso) {
+		return roleRepository.existePorAcesso(acesso);
+	}
 
-    void deleteById(Long id) {
-        roleRepository.deleteById(id);
-    }
+	public boolean existePorAcessoDiferenteId(Long id, String acesso) {
+		return roleRepository.existePorAcessoDiferenteId(id, acesso);
+	}
+
+	public void deleteById(Long id) {
+		roleRepository.deleteById(id);
+	}
+
+
+
+	// ====================dentro dos métodos do
+	// service===============================
+
+	// Verificar se está em uso
+	// Realizar um consulta com integração para saber se pode deletar
+	// Fazer copia e backup
+	// Fazer inumeras validações de regra de negocio
+	// Fazer validações
+	// Lançar exeções
+	// Escrever regras de negócio
 
 }
