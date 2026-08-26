@@ -151,9 +151,10 @@ public class TestCategoriaRepository extends TestContextoSpring {
 		
 		
 		assertEquals("Acessórios", page.getContent().get(0).getNome());
-		assertEquals("Áudio", page.getContent().get(4).getNome());
+		assertEquals("Beleza e Saúde", page.getContent().get(4).getNome());
 		assertEquals(5, page.getContent().size());
 		
+	
 	}
 	
 	
