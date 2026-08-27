@@ -57,8 +57,8 @@ public class Usuario implements UserDetails {
 	
 	private Boolean bloqueio = false;
 	
-	private String tokenSessao;
 	private String refreshToken;
+	private String tokenSessao;
 	
 
 	@NotNull(message = "Cliente ou Funcionário deve ser informada para cadastrar o usuário de acesso ao sistema.")
