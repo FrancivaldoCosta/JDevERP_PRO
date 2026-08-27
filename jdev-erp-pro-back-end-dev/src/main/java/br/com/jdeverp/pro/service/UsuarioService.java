@@ -42,6 +42,9 @@ public class UsuarioService {
 	@Autowired
 	private JwtService jwtService;
 	
+	@Autowired
+	private UsuarioLogadoService usuarioLogadoService;
+	
 	/**
 	 * Retorna o token de acesso para o usuário que fez o login
 	 * @param dto
@@ -72,7 +75,22 @@ public class UsuarioService {
 		return new TokenDTO(token);
 	}
 	
-	
+	public Usuario salvar(Usuario usuario) {
+		if (usuarioRepository.existePorLogin(usuario.getLogin(), usuarioLogadoService.getEmpresaIdLogada())) {
+			throw new MsgApiException("O login escolhido já existe, escolha outro login para cadastrar um novo usuário.");
+			
+		}
+		
+		if (usuario.getSenha().length() < 5) {
+			throw new MsgApiException("A senha deve ter mais de 5 caracteres.");
+		}
+		
+		if (usuarioRepository.existePorPessoa(usuario.getClienteFuncionario().getPessoa().getId(), usuarioLogadoService.getEmpresaIdLogada())) {
+			throw new MsgApiException("Já existe um usuário vinculado a esta pessoa.");
+			
+		}
+		
+	}
 	
 
 	public List<Usuario> findAll(Long idEmpresa) {

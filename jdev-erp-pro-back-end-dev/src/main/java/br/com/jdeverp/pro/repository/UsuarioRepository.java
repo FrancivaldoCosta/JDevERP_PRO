@@ -31,12 +31,25 @@ public interface UsuarioRepository extends JpaJdevRepository<Usuario, Long> {
 								+ " like unaccent(upper(concat('%', trim(:nome) ,'%')))")
 	List<Usuario> buscaPorNome(@Param("nome") String nome, @Param("idEmpresa") Long idEmpresa);
 	
+	/*existePorLogin*/
+	@Query("select count(u.id) > 0 from Usuario u where u.empresa.id = :idEmpresa "
+			+ " and unaccent(upper(trim(u.login))) "
+			+ " = unaccent(upper(trim(:login)))")
+	boolean existePorLogin(@Param("login") String login, @Param("idEmpresa") Long idEmpresa);
+	
+	
+	@Query("select count(u.id) > 0 from Usuario u where u.empresa.id = :idEmpresa "
+			+ " and u.clienteFuncionario.pessoa.id = :idPessoa")
+	boolean existePorPessoa(@Param("nome") Long idPessoa, @Param("idEmpresa") Long idEmpresa);
+	
+	
 	
 	/*Retorna true se já existir usuário com o mesmo nome da pessoa para a mesma empresa, no caso não podemos deixar salvar para não ficar repetido no banco de dados*/
 	@Query("select count(u.id) > 0 from Usuario u where u.empresa.id = :idEmpresa "
 			+ " and unaccent(upper(trim(u.clienteFuncionario.pessoa.nome))) "
 			+ " = unaccent(upper(trim(:nome)))")
 	boolean existePorNome(@Param("nome") String nome, @Param("idEmpresa") Long idEmpresa);
+	
 	
 	/*Verifica se existe outro usuário no banco de dados com o mesmo nome da pessoa mas ID diferentes da que está tentando atualizar*/
 	@Query("select count(u.id) > 0 from Usuario u where u.empresa.id = :idEmpresa "
