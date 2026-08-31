@@ -57,6 +57,11 @@ public interface UsuarioRepository extends JpaJdevRepository<Usuario, Long> {
 			+ " = unaccent(upper(trim(:nome))) and u.id <> :id")
     boolean existePorNomeDiferenteId(@Param("id") Long id, @Param("nome") String nome, @Param("idEmpresa") Long idEmpresa);	
 	
+	/*Verifica se existe outro usuário no banco de dados com o mesmo nome da pessoa mas ID diferentes da que está tentando atualizar*/
+	@Query("select count(u.id) > 0 from Usuario u where u.empresa.id = :idEmpresa "
+			+ " and u.clienteFuncionario.pessoa.id = :pessoaId and u.id <> :usuarioId")
+	boolean existeOutroUsuarioComPessoa(@Param("pessoaId") Long pessoaId, @Param("usuarioId") Long usuarioId, @Param("idEmpresa") Long idEmpresa);	
+	
 	/*Delete de um usuário de uma determinada empresa*/
 	@Transactional
 	@Modifying(flushAutomatically = true, clearAutomatically = true)
@@ -66,7 +71,7 @@ public interface UsuarioRepository extends JpaJdevRepository<Usuario, Long> {
 	
 	@Transactional
 	@Modifying(flushAutomatically = true, clearAutomatically = true)
-	@Query("update Usuario set tokenSessao = :token where id = :id")
-	void updateTokenSessaoLogin(@Param("id") Long id, @Param("token") String token);
+	@Query("update Usuario set tokenSessao = :token where id = :id and empresa.id = :idEmpresa")
+	void updateTokenSessaoLogin(@Param("id") Long id, @Param("token") String token, @Param("idEmpresa") Long idEmpresa);
 
 }

@@ -24,7 +24,7 @@ public class UsuarioDetailsService implements UserDetailsService {
 			throw new UsernameNotFoundException("Usuário não encontrado no banco de dados");
 		}
 		
-		return null;
+		return usuario;
 	}
 
 }

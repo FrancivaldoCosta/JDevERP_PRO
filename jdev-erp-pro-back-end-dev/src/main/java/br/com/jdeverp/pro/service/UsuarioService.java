@@ -11,9 +11,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.jdeverp.pro.dto.AlterarSenhaDTO;
 import br.com.jdeverp.pro.dto.LoginDTO;
 import br.com.jdeverp.pro.dto.TokenDTO;
 import br.com.jdeverp.pro.exception.MsgApiException;
+import br.com.jdeverp.pro.model.ClienteFuncionario;
+import br.com.jdeverp.pro.model.Role;
 import br.com.jdeverp.pro.model.Usuario;
 import br.com.jdeverp.pro.repository.UsuarioRepository;
 import jakarta.persistence.EntityManager;
@@ -45,6 +48,12 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioLogadoService usuarioLogadoService;
 	
+	@Autowired
+	private ClienteFuncionarioService clienteFuncionarioService;
+	
+	@Autowired
+	private RoleService roleService;
+	
 	/**
 	 * Retorna o token de acesso para o usuário que fez o login
 	 * @param dto
@@ -69,7 +78,7 @@ public class UsuarioService {
 		String token = jwtService.gerarToken(usuario);
 		
 		
-		usuarioRepository.updateTokenSessaoLogin(usuario.getId(), token);
+		usuarioRepository.updateTokenSessaoLogin(usuario.getId(), token, usuarioLogadoService.getEmpresaIdLogada());
 		
 		
 		return new TokenDTO(token);
@@ -90,6 +99,73 @@ public class UsuarioService {
 			
 		}
 		
+		if (usuario.getClienteFuncionario() == null) {
+			throw new MsgApiException("Não foi informado o registro de pessoa/ cliente ou funcionário para o usuário.");
+		}
+		
+		ClienteFuncionario clienteFuncionario = clienteFuncionarioService.findByPessoa(usuario.getClienteFuncionario().getPessoa().getId(), usuarioLogadoService.getEmpresaIdLogada());
+		
+		
+		List<Role> roles = roleService.buscaPorAcesso("ROLE_USER");
+		usuario.setAcessos(roles);
+		usuario.setClienteFuncionario(clienteFuncionario);
+		usuario.setEmpresa(usuarioLogadoService.getEmpresaLogada());
+		usuario = usuarioRepository.saveAndFlush(usuario);
+		
+		clienteFuncionario.setUsuario(usuario);
+		
+		clienteFuncionarioService.salvar(clienteFuncionario);
+		
+		return usuario;
+	}
+	
+	public Usuario atualizar(Usuario usuario) {
+		
+		if (usuarioRepository.existeOutroUsuarioComPessoa(usuario.getClienteFuncionario().getPessoa().getId(), usuario.getId(), usuarioLogadoService.getEmpresaIdLogada())) {
+			throw new MsgApiException("Existe outro usuário associado a pessoa que foi selecionada. ");
+		}
+		
+		Usuario usuarioBanco = buscarPorId(usuario.getId(), usuarioLogadoService.getEmpresaIdLogada()).get();
+		
+		if (usuario.getAcessos() == null || usuario.getAcessos().isEmpty()) {
+			usuario.setAcessos(usuarioBanco.getAcessos());
+		}
+		
+		ClienteFuncionario clienteFuncionario = clienteFuncionarioService.findByPessoa(usuario.getClienteFuncionario().getPessoa().getId(), usuarioLogadoService.getEmpresaIdLogada());
+
+		usuario.setSenha(usuarioBanco.getSenha());
+		usuario.setClienteFuncionario(clienteFuncionario);
+		usuario.setEmpresa(usuarioLogadoService.getEmpresaLogada());
+		
+		return usuarioRepository.save(usuario);
+		
+	}
+	
+	public void alterarSenha(AlterarSenhaDTO dto) {
+		 Usuario usuario = usuarioRepository.buscarPorId(dto.getId(), usuarioLogadoService.getEmpresaIdLogada()).get();
+		 
+		 if (usuario == null) {
+			throw new MsgApiException("Usuário não encontrado");
+		}
+		 
+		 if (!dto.getNovaSenha().equals(dto.getConfirmarSenha())) {
+			throw new MsgApiException("A confirmação da senha não confere");
+		}
+		 
+		 /*Conferencia se a nova senha é igual a do banco e emite a msg*/
+		 if (passwordEncoder.matches(dto.getNovaSenha(), usuario.getSenha())) {
+			throw new MsgApiException("A nova senha deve ser diferente da atual");
+		}
+		 
+		 /*Conferencia se a senha atual é a mesma do banco e autorisa a troca de senha*/
+		 if (!passwordEncoder.matches(dto.getSenhaAtual(), usuario.getSenha())) {
+			throw new MsgApiException("Senha atual é inválida");
+		}
+		 
+		 usuario.setSenha(passwordEncoder.encode(dto.getNovaSenha()));
+		 
+		 usuarioRepository.saveAndFlush(usuario);
+		 
 	}
 	
 

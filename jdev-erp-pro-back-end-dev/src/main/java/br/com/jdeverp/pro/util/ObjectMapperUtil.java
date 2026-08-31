@@ -23,7 +23,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  */
 
 @Component
-public class ObjctMapperUtil extends ObjectMapper {
+public class ObjectMapperUtil extends ObjectMapper {
 
 	
 	private static final long serialVersionUID = 1L;
@@ -31,7 +31,7 @@ public class ObjctMapperUtil extends ObjectMapper {
 	
 	private LinkedHashMap<String, Object> parser = new LinkedHashMap<String, Object>();
 
-	public ObjctMapperUtil() {
+	public ObjectMapperUtil() {
 		super();
 		
 		disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
