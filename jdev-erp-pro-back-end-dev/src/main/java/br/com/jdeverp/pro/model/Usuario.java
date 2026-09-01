@@ -57,7 +57,10 @@ public class Usuario implements UserDetails {
 	
 	private Boolean bloqueio = false;
 	
+	@Column(columnDefinition = "text")
 	private String refreshToken;
+	
+	@Column(columnDefinition = "text")
 	private String tokenSessao;
 	
 
