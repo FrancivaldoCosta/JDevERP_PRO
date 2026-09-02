@@ -55,7 +55,7 @@ public class Usuario implements UserDetails {
 	private String senha;
 	
 	
-	private Boolean bloqueio = false;
+	private Boolean bloqueado = false;
 	
 	@Column(columnDefinition = "text")
 	private String refreshToken;
@@ -69,6 +69,8 @@ public class Usuario implements UserDetails {
 	@JoinColumn(name = "cliente_funcionario_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "cliente_funcionario_fk"))
 	private ClienteFuncionario clienteFuncionario;
 	
+	
+	/* Alex -> ROLE_ADMIN, ROLE_GERENTE */
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "role_usuario", 
 			uniqueConstraints = @UniqueConstraint(name = "unique_role_user", 
