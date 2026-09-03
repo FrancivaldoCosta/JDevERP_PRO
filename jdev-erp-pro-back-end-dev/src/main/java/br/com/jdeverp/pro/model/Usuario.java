@@ -110,7 +110,7 @@ public class Usuario implements UserDetails {
 		return login;
 	}
 
-	
+
 	
 	
 	
