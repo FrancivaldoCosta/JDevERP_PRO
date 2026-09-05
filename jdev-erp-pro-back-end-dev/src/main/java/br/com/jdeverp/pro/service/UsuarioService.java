@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -64,13 +65,25 @@ public class UsuarioService {
 		Usuario usuario = buscaPorLogin(dto.getLogin());
 		
 		if (usuario == null) {
-			throw new MsgApiException("Usuário não encontrado.");
+			throw new MsgApiException("Usuário não encontrado.", HttpStatus.UNAUTHORIZED);
 		}
+		
+		
+		if (!usuario.isEnabled()) {
+			throw new MsgApiException("Usuário bloqueado, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
+		}
+		
+//		Aquie deu erro em chamar getBloqueio(),motivo = boolean na Empresa, tem que ser Boolean, para poder chamar o getBloqueio()
+		if(usuario.getEmpresa().getBloqueio()) {
+			throw new MsgApiException("Empresa bloqueada, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
+		}
+		
+		
 		
 		boolean senhaValida = passwordEncoder.matches(dto.getSenha(), usuario.getSenha());
 		
 		if (!senhaValida) {
-			throw new MsgApiException("Senha digitada é inválida.");
+			throw new MsgApiException("Senha digitada é inválida.", HttpStatus.UNAUTHORIZED);
 		}
 		
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getLogin(), dto.getSenha()));
@@ -147,6 +160,18 @@ public class UsuarioService {
 		 if (usuario == null) {
 			throw new MsgApiException("Usuário não encontrado");
 		}
+		 
+		 
+		 /* Segunda verificação */
+			if (usuario.isEnabled()) {
+				throw new MsgApiException("Usuário bloqueado, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
+			}
+			
+			/* Segunda verificação */
+			if(usuario.getEmpresa().getBloqueio()) {
+				throw new MsgApiException("Empresa bloqueada, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
+			}
+		 
 		 
 		 if (!dto.getNovaSenha().equals(dto.getConfirmarSenha())) {
 			throw new MsgApiException("A confirmação da senha não confere");

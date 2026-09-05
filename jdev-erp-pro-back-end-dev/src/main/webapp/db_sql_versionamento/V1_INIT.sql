@@ -155,7 +155,7 @@ INSERT INTO public.usuario(
 	token_sessao, 
 	cliente_funcionario_id, 
 	empresa_id)
-	VALUES (1, false, 'francivaldoaccosta@gmail.com', '', '$2a$10$KL9agZnTbrDthAF/VxHFTuPINrH8CEir1G4sVLWvfgcdk4IN9.0zq', '', 1, 1);
+	VALUES (1, false, 'francivaldoaccosta@gmail.com', '', '$2a$10$IR1YyIRLugk3QwPC/RQMz.oF2XEttkg9XRRwZlQJGHG90T/vP7vve', '', 1, 1);
 	
 	select nextval('seq_usuario');
 	
@@ -167,5 +167,12 @@ ALTER TABLE IF EXISTS public.usuario
     ALTER COLUMN refresh_token TYPE TEXT,
     ALTER COLUMN token_sessao TYPE TEXT;	
     
+    
+    
+    
+alter table usuario DROP COLUMN bloqueado;    
+ALTER TABLE IF EXISTS public.usuario ADD COLUMN liberado boolean;
+update usuario set liberado = true;
+
     
     

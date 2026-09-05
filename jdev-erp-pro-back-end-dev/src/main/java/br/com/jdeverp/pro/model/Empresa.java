@@ -46,9 +46,10 @@ public class Empresa {
 	@Column(nullable = true)
 	private Integer totalCliente = 0;
 
-	private boolean planoAtivo = false;
+	private Boolean planoAtivo = false;
 
-	private boolean bloqueio = false;
+	private Boolean bloqueio = false;
+	
 
 	@NotEmpty(message = "Infrme a logo marca da empresa")
 	@NotNull(message = "Logo marca deve ser informado")
@@ -63,4 +64,7 @@ public class Empresa {
 	@JoinColumn(name = "pessoa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_fk"))
 	private Pessoa pessoa;
 
+	
+	
+	
 }

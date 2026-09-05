@@ -55,7 +55,7 @@ public class Usuario implements UserDetails {
 	private String senha;
 	
 	
-	private Boolean bloqueado = false;
+	private Boolean liberado = true; 
 	
 	@Column(columnDefinition = "text")
 	private String refreshToken;
@@ -111,7 +111,10 @@ public class Usuario implements UserDetails {
 	}
 
 
-	
+	@Override
+	public boolean isEnabled() {
+		return liberado;
+	}
 	
 	
 }
