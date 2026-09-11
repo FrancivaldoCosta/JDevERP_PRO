@@ -114,6 +114,8 @@ INSERT INTO categoria (id, nome, empresa_id) VALUES (nextval('seq_categoria'), '
 
 CREATE EXTENSION IF NOT EXISTS unaccent;
 
+--Bloco 2
+
 INSERT INTO public.role(
 	id, acesso)
 	VALUES (1, 'ROLE_USER');
@@ -131,8 +133,14 @@ select nextval('seq_role');
 ALTER TABLE cliente_funcionario
     ALTER COLUMN usuario_id DROP NOT NULL;
     
-    
-  /*Codigo que eu não vi se ja foi implementado aqui, peguei do github*/      
+--    Bloco 3
+ 
+--Esse comando foi executado nessa posição, ele foi colocado embaixo pelo professor
+/*
+    ALTER TABLE IF EXISTS public.usuario
+    ALTER COLUMN refresh_token TYPE TEXT,
+    ALTER COLUMN token_sessao TYPE TEXT;
+*/
  
 INSERT INTO public.cliente_funcionario(
 	id, 
@@ -162,7 +170,7 @@ INSERT INTO public.usuario(
 	
 	update cliente_funcionario SET usuario_id = 1 where id =1;
 	
-	
+--Esse foi executado encima	
 ALTER TABLE IF EXISTS public.usuario
     ALTER COLUMN refresh_token TYPE TEXT,
     ALTER COLUMN token_sessao TYPE TEXT;	

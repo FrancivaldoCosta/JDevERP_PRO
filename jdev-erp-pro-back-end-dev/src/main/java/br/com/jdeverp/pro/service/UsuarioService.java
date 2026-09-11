@@ -68,12 +68,12 @@ public class UsuarioService {
 			throw new MsgApiException("Usuário não encontrado.", HttpStatus.UNAUTHORIZED);
 		}
 		
-		
+		/* Implementação e primeira verificação */
 		if (!usuario.isEnabled()) {
 			throw new MsgApiException("Usuário bloqueado, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
 		}
 		
-//		Aquie deu erro em chamar getBloqueio(),motivo = boolean na Empresa, tem que ser Boolean, para poder chamar o getBloqueio()
+		/* Implementação e primeira verificação */
 		if(usuario.getEmpresa().getBloqueio()) {
 			throw new MsgApiException("Empresa bloqueada, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
 		}
@@ -163,7 +163,7 @@ public class UsuarioService {
 		 
 		 
 		 /* Segunda verificação */
-			if (usuario.isEnabled()) {
+			if (!usuario.isEnabled()) {
 				throw new MsgApiException("Usuário bloqueado, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
 			}
 			
