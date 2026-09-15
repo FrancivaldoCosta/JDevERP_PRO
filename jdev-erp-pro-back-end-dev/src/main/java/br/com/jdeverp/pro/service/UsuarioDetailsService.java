@@ -27,15 +27,15 @@ public class UsuarioDetailsService implements UserDetailsService {
 		}
 		
 		
-		 /* Terceira verificação */
-			if (!usuario.isEnabled()) {
-				throw new MsgApiException("Usuário bloqueado, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
-			}
-			
-			/* Terceira verificação */
-			if(usuario.getEmpresa().getBloqueio()) {
-				throw new MsgApiException("Empresa bloqueada, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
-			}
+//		 /* Terceira verificação */
+//			if (!usuario.isEnabled()) {
+//				throw new MsgApiException("Usuário bloqueado, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
+//			}
+//			
+//			/* Terceira verificação */
+//			if(usuario.getEmpresa().getBloqueio()) {
+//				throw new MsgApiException("Empresa bloqueada, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
+//			}
 		
 		
 		return usuario;
