@@ -199,7 +199,7 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		TypedQuery<T> query = entityManager.createQuery(jpql, domainClass);
 
 		if (multiEmpresa) {
-			query.setParameter("empresa.id", empresaId);
+			query.setParameter("empresaId", empresaId);
 		}
 
 		return query.getResultList();

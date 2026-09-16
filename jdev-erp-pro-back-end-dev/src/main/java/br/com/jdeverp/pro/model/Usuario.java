@@ -8,6 +8,8 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -46,24 +48,29 @@ public class Usuario implements UserDetails {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_usuario")	
 	private Long id;
 	
+	@JsonIgnore
 	@NotBlank(message = "Login dever ser informado")
 	@Column(nullable = false, unique = true)
 	private String login;
 	
+	@JsonIgnore
 	@NotBlank(message = "Senha dever ser informada")
 	@Column(nullable = false, unique = true)
 	private String senha;
 	
-	
+	@JsonIgnore
 	private Boolean liberado = true; 
 	
+	@JsonIgnore
 	@Column(columnDefinition = "text")
 	private String refreshToken;
 	
+	@JsonIgnore
 	@Column(columnDefinition = "text")
 	private String tokenSessao;
 	
 
+	@JsonIgnore
 	@NotNull(message = "Cliente ou Funcionário deve ser informada para cadastrar o usuário de acesso ao sistema.")
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cliente_funcionario_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "cliente_funcionario_fk"))
@@ -71,7 +78,8 @@ public class Usuario implements UserDetails {
 	
 	
 	/* Alex -> ROLE_ADMIN, ROLE_GERENTE */
-	@ManyToMany(fetch = FetchType.LAZY)
+	@JsonIgnore
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "role_usuario", 
 			uniqueConstraints = @UniqueConstraint(name = "unique_role_user", 
 			columnNames = {"acesso_id","usuario_id"}), /* Constraint de unicidade entre usuário e acesso */
@@ -86,19 +94,25 @@ public class Usuario implements UserDetails {
 	)
 	private List<Role> acessos = new ArrayList<Role>();
 	
-	
-	@NotNull(message = "Empresa deve ser informada corretamente")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
+	/* Refere-se ao cadastro da empresa em multitanci */
+	@JsonIgnore
+	@NotNull(message = "Empresa deve ser informada")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "empresa_id", 
+			nullable = false, 
+			foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, 
+										name = "empresa_fk"))
 	private Empresa empresa;
 
 
+	@JsonIgnore
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return acessos;
 	}
 
 
+	@JsonIgnore
 	@Override
 	public @Nullable String getPassword() {
 		return senha;
@@ -111,9 +125,29 @@ public class Usuario implements UserDetails {
 	}
 
 
+	@JsonIgnore
 	@Override
 	public boolean isEnabled() {
 		return liberado;
+	}
+
+
+	@JsonIgnore
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+	
+	@JsonIgnore
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+	
+	@JsonIgnore
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
 	}
 	
 	
