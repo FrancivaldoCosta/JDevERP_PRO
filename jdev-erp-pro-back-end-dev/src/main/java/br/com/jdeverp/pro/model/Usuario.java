@@ -70,7 +70,7 @@ public class Usuario implements UserDetails {
 	private String tokenSessao;
 	
 
-	@JsonIgnore
+
 	@NotNull(message = "Cliente ou Funcionário deve ser informada para cadastrar o usuário de acesso ao sistema.")
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cliente_funcionario_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "cliente_funcionario_fk"))
@@ -95,7 +95,6 @@ public class Usuario implements UserDetails {
 	private List<Role> acessos = new ArrayList<Role>();
 	
 	/* Refere-se ao cadastro da empresa em multitanci */
-	@JsonIgnore
 	@NotNull(message = "Empresa deve ser informada")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "empresa_id", 

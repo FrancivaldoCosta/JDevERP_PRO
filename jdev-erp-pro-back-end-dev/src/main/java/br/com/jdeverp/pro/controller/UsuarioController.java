@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jdeverp.pro.dto.LoginDTO;
 import br.com.jdeverp.pro.dto.TokenDTO;
+import br.com.jdeverp.pro.dto.UsuarioDto;
 import br.com.jdeverp.pro.model.Usuario;
 import br.com.jdeverp.pro.service.UsuarioLogadoService;
 import br.com.jdeverp.pro.service.UsuarioService;
@@ -40,7 +41,7 @@ public class UsuarioController {
 	}
 	
 	@GetMapping("/listar")
-	public ResponseEntity<List<Usuario>> listarUsuarios() {
+	public ResponseEntity<List<UsuarioDto>> listarUsuarios() {
 		return ResponseEntity.ok(usuarioService.listar(usuarioLogadoService.getEmpresaIdLogada()));
 	}
 	
