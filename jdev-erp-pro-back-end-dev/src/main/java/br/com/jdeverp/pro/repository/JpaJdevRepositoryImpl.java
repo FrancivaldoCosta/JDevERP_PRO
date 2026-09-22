@@ -170,7 +170,7 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 	@Override
 	public Optional<T> buscarPorId(ID id, Long empresaId) {
 
-		String jpql = "from " + domainClass.getSimpleName() + " where id :id";
+		String jpql = "from " + domainClass.getSimpleName() + " where id = :id";
 
 		if (multiEmpresa) {
 			jpql += " and empresa.id = :empresaId";
@@ -180,7 +180,7 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		query.setParameter("id", id);
 
 		if (multiEmpresa) {
-			query.setParameter("empresa.id", empresaId);
+			query.setParameter("empresaId", empresaId);
 		}
 
 		return query.getResultStream().findFirst();

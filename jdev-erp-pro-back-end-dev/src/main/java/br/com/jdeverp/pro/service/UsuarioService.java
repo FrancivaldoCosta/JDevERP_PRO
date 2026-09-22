@@ -217,6 +217,7 @@ public class UsuarioService {
 	}
 
 	public void deleteById(Long id, Long idEmpresa) {
+		clienteFuncionarioService.removeUserClienteFuncionarioId(id, idEmpresa);
 		usuarioRepository.deleteById(id, idEmpresa);
 	}
 
@@ -236,7 +237,6 @@ public class UsuarioService {
 		return usuarioRepository.existsById(id, empresaId);
 	}
 
-// PAREI AQUI
 	public List<UsuarioDto> listar(Long empresaId) {
 		
 		List<UsuarioDto> dtos = new java.util.ArrayList<UsuarioDto>();
@@ -260,6 +260,25 @@ public class UsuarioService {
 
 	public Optional<Usuario> buscarPorId(Long id, Long empresaId) {
 		return usuarioRepository.buscarPorId(id, empresaId);
+	}
+	
+	public UsuarioDto buscarPorIdDto(Long id, Long empresaId) {
+		
+		Optional<Usuario> usuario = usuarioRepository.buscarPorId(id, empresaId);
+		
+		if (!usuario.isPresent()) {
+			throw new MsgApiException("Usuário não foi encontrado na busca.");
+		}
+		
+		UsuarioDto dto = new UsuarioDto();
+		dto.setId(usuario.get().getId());
+		dto.setPessoa(usuario.get().getClienteFuncionario().getPessoa().getNome());
+		dto.setLiberado(usuario.get().isEnabled());
+		dto.setEmpresa(usuario.get().getEmpresa().getPessoa().getNome());
+		dto.setTipoClienteFuncionario(usuario.get().getClienteFuncionario().getTipoClienteFuncionario().name());
+		
+		
+		return dto;
 	}
 
 	public long total(Long empresaId) {

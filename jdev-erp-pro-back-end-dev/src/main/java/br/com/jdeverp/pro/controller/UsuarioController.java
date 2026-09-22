@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.jdeverp.pro.dto.LoginDTO;
 import br.com.jdeverp.pro.dto.TokenDTO;
 import br.com.jdeverp.pro.dto.UsuarioDto;
-import br.com.jdeverp.pro.model.Usuario;
 import br.com.jdeverp.pro.service.UsuarioLogadoService;
 import br.com.jdeverp.pro.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -45,6 +46,25 @@ public class UsuarioController {
 		return ResponseEntity.ok(usuarioService.listar(usuarioLogadoService.getEmpresaIdLogada()));
 	}
 	
+	@GetMapping("/buscarPorId/{id}")
+	public ResponseEntity<UsuarioDto> buscarPorId(@PathVariable(required = true, value = "id") Long idUser) {
+		return ResponseEntity.ok(usuarioService.buscarPorIdDto(idUser, usuarioLogadoService.getEmpresaIdLogada()));
+		
+		
+	}
 	
+	@DeleteMapping("/deletar/{id}")
+	public ResponseEntity<String> deletePorId(@PathVariable(required = true, value = "id") Long idUser) {
+		
+		usuarioService.deleteById(idUser, usuarioLogadoService.getEmpresaIdLogada());
+		
+		
+		return ResponseEntity.ok("Usuario deletado com sucesso!");
+		
+				
+	}
+	
+	
+	/*Criar, update e delete*/
 
 }

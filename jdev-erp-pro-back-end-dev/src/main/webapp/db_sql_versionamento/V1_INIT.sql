@@ -177,10 +177,67 @@ ALTER TABLE IF EXISTS public.usuario
     
     
     
-    
-alter table usuario DROP COLUMN bloqueado;    
+--O professor alterou o DROP do bloqueado, na criação do segundo usuario  
+ALTER TABLE usuario DROP COLUMN IF EXISTS bloqueado;    
 ALTER TABLE IF EXISTS public.usuario ADD COLUMN liberado boolean;
 update usuario set liberado = true;
 
     
+	
+--Criação do segundo usuario, seguindo as aulas de controller "O professor não colou o dele"
+--Daqui
+INSERT INTO public.pessoa(
+	id, ativo, bairro,
+	cep, cidade, cnpj,
+	complemento, cpf, data_cadastro,
+	email, estado,
+	logradouro, nome, nome_fantasia,
+	observacao, pais, razao_social,
+	telefone, tipo_pessoa, empresa_id, 
+	inscricao_estadual)
+	VALUES (
+	     2, true, 'Jd Dias 1',
+		'87025-758', 'Maringá', '26.934.453/0001-90',
+		'perto do mercado Katayma', '059.486.784-86', '2026-07-15',
+		'contato2@jdevtreinamento.com.br', 'PR', 
+		'Rua Pioneiro Antonio', 'Alex Fernando Egidio', 'Jdev Treinamento LTDA',
+		'Nenhuma', 'Brasil', 'JDev Treinamento', 
+		'44 9 8821-2355', 'JURIDICA', 1, 
+		'878787-788');
+		
+select nextval('seq_pessoa');	
+		
+		
+		
+INSERT INTO public.cliente_funcionario(
+	id, 
+	tipo_cliente_funcionario, 
+	empresa_id, 
+	pessoa_id,
+	usuario_id)
+	VALUES (2, 'FUNCIONARIO', 1, 2, null);
+
+select nextval('seq_cliente_funcionario');
+
+
+
+
+
+INSERT INTO public.usuario(
+	id,
+	liberado, 
+	login, 
+	refresh_token, 
+	senha, 
+	token_sessao, 
+	cliente_funcionario_id, 
+	empresa_id)
+	VALUES (2, false, 'francivaldoaccosta2@gmail.com', '', '5$2a$10$IR1YyIRLugk3QwPC/RQMz.oF2XEttkg9XRRwZlQJGHG90T/vP7vve', '', 2, 1);
+	
+select nextval('seq_usuario');
+	
+	
+update cliente_funcionario SET usuario_id = 2 where id =2;
+--Até aqui
+	
     
