@@ -98,29 +98,43 @@ public class UsuarioService {
 		return new TokenDTO(token);
 	}
 	
-	public Usuario salvar(Usuario usuario) {
-		if (usuarioRepository.existePorLogin(usuario.getLogin(), usuarioLogadoService.getEmpresaIdLogada())) {
+	public UsuarioDto salvar(UsuarioDto usuarioDto) {
+		
+		
+		if (!usuarioLogadoService.isAdmin()) {
+			throw new MsgApiException("Apenas administrador podem cadastrar novos usuários.");
+		}
+		
+		
+		
+		if (usuarioRepository.existePorLogin(usuarioDto.getLogin(), usuarioLogadoService.getEmpresaIdLogada())) {
 			throw new MsgApiException("O login escolhido já existe, escolha outro login para cadastrar um novo usuário.");
 			
 		}
 		
-		if (usuario.getSenha().length() < 5) {
+		if (usuarioDto.getSenha().length() < 5) {
 			throw new MsgApiException("A senha deve ter mais de 5 caracteres.");
 		}
 		
-		if (usuarioRepository.existePorPessoa(usuario.getClienteFuncionario().getPessoa().getId(), usuarioLogadoService.getEmpresaIdLogada())) {
+		if (usuarioRepository.existePorPessoa(usuarioDto.getPessoaId(), usuarioLogadoService.getEmpresaIdLogada())) {
 			throw new MsgApiException("Já existe um usuário vinculado a esta pessoa.");
 			
 		}
 		
-		if (usuario.getClienteFuncionario() == null) {
+		if (usuarioDto.getClienteFuncionarioId() == null) {
 			throw new MsgApiException("Não foi informado o registro de pessoa/ cliente ou funcionário para o usuário.");
 		}
 		
-		ClienteFuncionario clienteFuncionario = clienteFuncionarioService.findByPessoa(usuario.getClienteFuncionario().getPessoa().getId(), usuarioLogadoService.getEmpresaIdLogada());
+		ClienteFuncionario clienteFuncionario = clienteFuncionarioService.findByPessoa(usuarioDto.getPessoaId(), usuarioLogadoService.getEmpresaIdLogada());
 		
 		
 		List<Role> roles = roleService.buscaPorAcesso("ROLE_USER");
+		
+		Usuario usuario = new Usuario();
+		
+		usuario.setLogin(usuarioDto.getLogin());
+		usuario.setSenha(passwordEncoder.encode(usuarioDto.getSenha()));
+		usuario.setLiberado(usuarioDto.getLiberado());
 		usuario.setAcessos(roles);
 		usuario.setClienteFuncionario(clienteFuncionario);
 		usuario.setEmpresa(usuarioLogadoService.getEmpresaLogada());
@@ -130,10 +144,18 @@ public class UsuarioService {
 		
 		clienteFuncionarioService.salvar(clienteFuncionario);
 		
-		return usuario;
+		PAREI AQUI
+		usuarioDto.setSenha(null); /* Não pode expor a senha na rede */
+		usuarioDto.setId(usuario.getId());
+		return usuarioDto;
 	}
 	
 	public Usuario atualizar(Usuario usuario) {
+		
+		if (!usuarioLogadoService.isAdmin()) {
+			throw new MsgApiException("Apenas administrador podem cadastrar novos usuários.");
+		}
+		
 		
 		if (usuarioRepository.existeOutroUsuarioComPessoa(usuario.getClienteFuncionario().getPessoa().getId(), usuario.getId(), usuarioLogadoService.getEmpresaIdLogada())) {
 			throw new MsgApiException("Existe outro usuário associado a pessoa que foi selecionada. ");

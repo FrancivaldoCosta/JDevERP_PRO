@@ -31,4 +31,9 @@ public class UsuarioLogadoService {
 		return getUsuarioLogado().getId();
 	}
 	
+	public boolean isAdmin() {
+		return getUsuarioLogado().idAdmin();
+	}
+	
+	
 }

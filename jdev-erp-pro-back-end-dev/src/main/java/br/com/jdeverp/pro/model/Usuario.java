@@ -149,5 +149,14 @@ public class Usuario implements UserDetails {
 		return true;
 	}
 	
+	public boolean idAdmin() {
+		
+		if (acessos == null || acessos.isEmpty()) {
+			return false;
+		}
+		
+		return acessos.stream().anyMatch(role -> role.getAcesso().equals("ROLE_ADMIN"));
+	} 
+	
 	
 }

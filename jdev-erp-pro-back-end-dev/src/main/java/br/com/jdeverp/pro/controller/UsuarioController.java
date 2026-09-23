@@ -30,6 +30,15 @@ public class UsuarioController {
 	
 	@Autowired
 	private UsuarioLogadoService usuarioLogadoService;
+	
+	
+	@PostMapping("/salvar")
+	public ResponseEntity<UsuarioDto> salvar(@RequestBody @Valid UsuarioDto usuarioDto) {
+		UsuarioDto usuarioSalvo = usuarioService.salvar(usuarioDto, usuarioLogadoService.getEmpresaIdLogada());
+		return ResponseEntity.ok(usuarioSalvo);
+	}
+	
+	
 
 	/* Ponto de acesso (end-point): /api/usuario/login */
 	@PostMapping("/login")
@@ -65,6 +74,6 @@ public class UsuarioController {
 	}
 	
 	
-	/*Criar, update e delete*/
+	/*Salvar, update*/
 
 }

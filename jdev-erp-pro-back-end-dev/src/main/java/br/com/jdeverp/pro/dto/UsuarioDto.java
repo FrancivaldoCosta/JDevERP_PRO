@@ -1,5 +1,6 @@
 package br.com.jdeverp.pro.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /*DTO (ou Record) - Data Transfer Object = Objeto de Transferência de dados.*/
@@ -8,8 +9,19 @@ public class UsuarioDto {
 	
 	private Long id;
 	private String pessoa;
-	private Boolean liberado;
+	private Boolean liberado = true;
 	private String empresa;
 	private String tipoClienteFuncionario;
+	
+	@NotNull(message = "Login deve ser informado")
+	private String login;
+	
+	@NotNull(message = "Senha deve ser informada")
+	private String senha;
+	
+	@NotNull(message = "Cliente ou funcionário deve ser informado para cadastrar o usuário de acesso ao sistema.")	
+	private Long ClienteFuncionarioId;
+	
+	private Long pessoaId;
 
 }
