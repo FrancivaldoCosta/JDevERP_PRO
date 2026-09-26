@@ -170,6 +170,13 @@ INSERT INTO public.usuario(
 	
 	update cliente_funcionario SET usuario_id = 1 where id =1;
 	
+	
+	INSERT INTO public.role_usuario(
+	id, acesso_id, usuario_id)
+	VALUES (1, 2, 1);
+	select nextval('seq_role_usuario');
+	
+	
 --Esse foi executado encima	
 ALTER TABLE IF EXISTS public.usuario
     ALTER COLUMN refresh_token TYPE TEXT,

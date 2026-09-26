@@ -19,9 +19,9 @@ public class UsuarioDto {
 	@NotNull(message = "Senha deve ser informada")
 	private String senha;
 	
-	@NotNull(message = "Cliente ou funcionário deve ser informado para cadastrar o usuário de acesso ao sistema.")	
 	private Long ClienteFuncionarioId;
 	
+	@NotNull(message = "Cliente ou funcionário deve ser informado para cadastrar o usuário de acesso ao sistema.")	
 	private Long pessoaId;
 
 }

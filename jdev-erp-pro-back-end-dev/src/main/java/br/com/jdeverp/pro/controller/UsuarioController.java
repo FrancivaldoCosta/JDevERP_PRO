@@ -34,7 +34,7 @@ public class UsuarioController {
 	
 	@PostMapping("/salvar")
 	public ResponseEntity<UsuarioDto> salvar(@RequestBody @Valid UsuarioDto usuarioDto) {
-		UsuarioDto usuarioSalvo = usuarioService.salvar(usuarioDto, usuarioLogadoService.getEmpresaIdLogada());
+		UsuarioDto usuarioSalvo = usuarioService.salvar(usuarioDto);
 		return ResponseEntity.ok(usuarioSalvo);
 	}
 	

@@ -141,12 +141,12 @@ public class UsuarioService {
 		usuario = usuarioRepository.saveAndFlush(usuario);
 		
 		clienteFuncionario.setUsuario(usuario);
-		
 		clienteFuncionarioService.salvar(clienteFuncionario);
 		
-		PAREI AQUI
+		
 		usuarioDto.setSenha(null); /* Não pode expor a senha na rede */
 		usuarioDto.setId(usuario.getId());
+		
 		return usuarioDto;
 	}
 	
