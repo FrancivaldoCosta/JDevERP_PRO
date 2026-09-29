@@ -39,6 +39,13 @@ public class UsuarioController {
 	}
 	
 	
+	
+	@PostMapping("/atualizar")
+	public ResponseEntity<UsuarioDto> atualizar(@RequestBody @Valid UsuarioDto usuarioDto) {
+		UsuarioDto usuarioSalvo = usuarioService.atualizar(usuarioDto);
+		return ResponseEntity.ok(usuarioSalvo);
+	}
+	
 
 	/* Ponto de acesso (end-point): /api/usuario/login */
 	@PostMapping("/login")

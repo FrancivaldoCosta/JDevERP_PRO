@@ -16,7 +16,6 @@ public class UsuarioDto {
 	@NotNull(message = "Login deve ser informado")
 	private String login;
 	
-	@NotNull(message = "Senha deve ser informada")
 	private String senha;
 	
 	private Long ClienteFuncionarioId;
