@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.jdeverp.pro.dto.AlterarSenhaDTO;
 import br.com.jdeverp.pro.dto.LoginDTO;
 import br.com.jdeverp.pro.dto.TokenDTO;
 import br.com.jdeverp.pro.dto.UsuarioDto;
@@ -55,6 +56,15 @@ public class UsuarioController {
 
 		return ResponseEntity.ok(TokenDTO);
 
+	}
+	
+	@PostMapping("/alterarSenha")
+	public ResponseEntity<String> alterarSenha(@RequestBody @Valid AlterarSenhaDTO dto) {
+		
+		usuarioService.alterarSenha(dto);
+		
+		return ResponseEntity.ok("Senha alterada com sucesso!");
+		
 	}
 	
 	@GetMapping("/listar")
