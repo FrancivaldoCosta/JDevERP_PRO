@@ -290,8 +290,8 @@ public class UsuarioService {
 
 	public List<UsuarioDto> listar(Long empresaId) {
 		
-		List<UsuarioDto> dtos = new java.util.ArrayList<UsuarioDto>();
 		List<Usuario> usuarios = usuarioRepository.listar(empresaId);
+		List<UsuarioDto> dtos = new java.util.ArrayList<UsuarioDto>();
 		
 		for (Usuario usuario : usuarios) {
 			
@@ -335,10 +335,40 @@ public class UsuarioService {
 	public long total(Long empresaId) {
 		return usuarioRepository.total(empresaId);
 	}
-
+	
+	
+	
 	public Page<Usuario> listarPaginado(Long empresaId, Pageable pageable) {
 		return usuarioRepository.listarPaginado(empresaId, pageable);
 	}
+	
+	
+	
+
+	public List<UsuarioDto> listarPaginadoDto(Long empresaId, Pageable pageable) {
+		
+		Page<Usuario> usuarios = usuarioRepository.listarPaginado(empresaId, pageable);
+		List<UsuarioDto> dtos = new java.util.ArrayList<UsuarioDto>();
+		
+		for (Usuario usuario : usuarios) {
+			
+			UsuarioDto dto = new UsuarioDto();
+			
+			dto.setId(usuario.getId());
+			dto.setPessoa(usuario.getClienteFuncionario().getPessoa().getNome());
+			dto.setLiberado(usuario.isEnabled());
+			dto.setEmpresa(usuario.getEmpresa().getPessoa().getNome());
+			dto.setTipoClienteFuncionario(usuario.getClienteFuncionario().getTipoClienteFuncionario().name());
+			
+			dtos.add(dto);
+		}
+		
+		return dtos;
+	}
+		
+		
+		
+	
 
 	// ====================dentro dos métodos do
 	// service===============================
