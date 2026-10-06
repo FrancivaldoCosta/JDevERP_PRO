@@ -16,6 +16,9 @@ public class UsuarioDetailsService implements UserDetailsService {
 	
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	private JwtService jwtService;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -27,18 +30,33 @@ public class UsuarioDetailsService implements UserDetailsService {
 		}
 		
 		
-//		 /* Terceira verificação */
-//			if (!usuario.isEnabled()) {
-//				throw new MsgApiException("Usuário bloqueado, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
-//			}
-//			
-//			/* Terceira verificação */
-//			if(usuario.getEmpresa().getBloqueio()) {
-//				throw new MsgApiException("Empresa bloqueada, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
-//			}
+		 /* Terceira verificação */
+			if (!usuario.isEnabled()) {
+				throw new MsgApiException("Usuário bloqueado, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
+			}
+			
+			/* Terceira verificação */
+			if(usuario.getEmpresa().getBloqueio()) {
+				throw new MsgApiException("Empresa bloqueada, entre em contato com o administrador do sistema.", HttpStatus.UNAUTHORIZED);
+			}
 		
 		
 		return usuario;
 	}
+	
+	public void existsByTokenParaUser(String token) {
+		Long idEmpresa = jwtService.extrairEmpresaId(token);
+		Long idUsuario = jwtService.extrairEmpresaId(token);
+		
+		
+		boolean existe = usuarioRepository.existsByTokenParaUser(token, idUsuario, idEmpresa);
+		
+		if (!existe) {
+			throw new MsgApiException("Usuário não autenticado ou token inválido.", HttpStatus.UNAUTHORIZED);
+		}
+		
+	}
+	
+	
 
 }
