@@ -94,7 +94,13 @@ public class CategoriaService {
 		return categoriaRepository.existePorNomeDiferenteId(id, nome, idEmpresa);
 	}
 
-	void deleteById(Long id, Long idEmpresa) {
+	public void deleteById(Long id, Long idEmpresa) {
+		
+		if (!categoriaRepository.existsById(id, idEmpresa)) {
+			throw new MsgApiException("Categoria não encontrada para a empresa logada, portanto não pode ser deletada.");
+		}
+		
+		
 		categoriaRepository.deleteById(id, idEmpresa);
 	}
 

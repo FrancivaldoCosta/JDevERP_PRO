@@ -219,7 +219,7 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		query.setParameter("id", id);
 		
 		if (multiEmpresa) {
-			query.setParameter("empresa.id", empresaId);
+			query.setParameter("empresaId", empresaId);
 		}
 		
 		query.setMaxResults(1);
