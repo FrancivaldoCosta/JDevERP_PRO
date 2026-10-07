@@ -31,8 +31,8 @@ public class Categoria {
 	@Column(nullable = false)
 	private String nome;
 	
-	
-	@NotNull(message = "Empresa deve ser informada corretamente")
+	/*Refere-se ao cadastro da empresa em multitaneti*/
+//	@NotNull(message = "Empresa deve ser informada corretamente")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
 	private Empresa empresa;

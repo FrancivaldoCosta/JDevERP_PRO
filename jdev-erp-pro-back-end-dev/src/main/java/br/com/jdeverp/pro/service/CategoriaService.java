@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.jdeverp.pro.exception.MsgApiException;
 import br.com.jdeverp.pro.model.Categoria;
 import br.com.jdeverp.pro.repository.CategoriaRepository;
 import jakarta.persistence.EntityManager;
@@ -25,6 +26,55 @@ public class CategoriaService {
 	 */
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	
+	@Autowired
+	private UsuarioLogadoService usuarioLogadoService;
+	
+	
+	
+	
+	public Categoria salvar(Categoria categoria) {
+		
+		if (this.existePorNome(categoria.getNome(), usuarioLogadoService.getEmpresaIdLogada())) {
+			throw new MsgApiException("Já existe uma categoria com o mesmo nome para a empresa logada.");
+			
+		}
+		
+		
+		categoria.setEmpresa(usuarioLogadoService.getEmpresaLogada()); 
+		
+		
+		return categoriaRepository.save(categoria);
+	}
+	
+	
+	
+	
+	
+	
+	public Categoria atualizar(Categoria categoria) {
+		
+		
+		if (categoria.getId() == null) {
+			throw new MsgApiException("Id da categoria não informado para atualizar.");
+			
+		}
+		
+		
+		if (this.existePorNomeDiferenteId(categoria.getId(), categoria.getNome(), usuarioLogadoService.getEmpresaIdLogada())) {
+			throw new MsgApiException("Já existe uma categoria com o mesmo nome desta que está sendo informada para atualizar, informe outro nome.");
+			
+		}
+		
+		
+		categoria.setEmpresa(usuarioLogadoService.getEmpresaLogada()); 
+		
+		
+		return categoriaRepository.save(categoria);
+	}
+	
+	
 
 	/* Os métodos do service serão chamador pelo Controller */
 	public List<Categoria> findAll(Long idEmpresa) {
