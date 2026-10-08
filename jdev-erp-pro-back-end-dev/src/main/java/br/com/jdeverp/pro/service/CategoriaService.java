@@ -81,7 +81,7 @@ public class CategoriaService {
 		return categoriaRepository.findAll(idEmpresa);
 	}
 
-	List<Categoria> buscaPorNome(String nome, Long idEmpresa) {
+	public List<Categoria> buscaPorNome(String nome, Long idEmpresa) {
 		return categoriaRepository.buscaPorNome(nome, idEmpresa);
 	}
 

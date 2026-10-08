@@ -1,15 +1,17 @@
 package br.com.jdeverp.pro.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.jdeverp.pro.dto.UsuarioDto;
 import br.com.jdeverp.pro.model.Categoria;
 import br.com.jdeverp.pro.service.CategoriaService;
 import br.com.jdeverp.pro.service.UsuarioLogadoService;
@@ -46,6 +48,21 @@ public class CategoriaController {
 		categoriaService.deleteById(idCategoria, usuarioLogadoService.getEmpresaIdLogada());
 		return ResponseEntity.ok("Categoria deletada com sucesso.");
 	}
+	
+	
+	@GetMapping("/listar")
+	public ResponseEntity<List<Categoria>> listar() {
+		return ResponseEntity.ok(categoriaService.findAll(usuarioLogadoService.getEmpresaIdLogada()));
+	}
+	
+	
+	
+	
+	@GetMapping("/buscaPorNome/{nome}")
+	public ResponseEntity<List<Categoria>> buscaPorNome(@PathVariable String nome) {
+		return ResponseEntity.ok(categoriaService.buscaPorNome(nome, usuarioLogadoService.getEmpresaIdLogada()));
+	}
+	
 	
 
 }
