@@ -3,6 +3,9 @@ package br.com.jdeverp.pro.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.jdeverp.pro.model.Categoria;
@@ -61,6 +65,28 @@ public class CategoriaController {
 	@GetMapping("/buscaPorNome/{nome}")
 	public ResponseEntity<List<Categoria>> buscaPorNome(@PathVariable String nome) {
 		return ResponseEntity.ok(categoriaService.buscaPorNome(nome, usuarioLogadoService.getEmpresaIdLogada()));
+	}
+
+	@GetMapping("/existePorNome/{nome}")
+	public ResponseEntity<Boolean> existePorNome(@PathVariable String nome) {
+		return ResponseEntity.ok(categoriaService.existePorNome(nome, usuarioLogadoService.getEmpresaIdLogada()));
+	}
+
+	@GetMapping("/existePorNomeDiferenteId/{id}/{nome}")
+	public ResponseEntity<Boolean> existePorNomeDiferenteId(@PathVariable("id") Long idCategoria, @PathVariable String nome) {
+		return ResponseEntity.ok(categoriaService.existePorNomeDiferenteId(idCategoria, nome, usuarioLogadoService.getEmpresaIdLogada()));
+	}
+
+	@GetMapping("/paginado")
+	public ResponseEntity<List<Categoria>> listarPaginado(@RequestParam(defaultValue = "0") int page,
+												   @RequestParam(defaultValue = "10") int size,
+												   @RequestParam(defaultValue = "id") String sort,
+												   @RequestParam(defaultValue = "asc") String direction) {
+
+		Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+		Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sort));
+
+		return ResponseEntity.ok(categoriaService.listarPaginado(usuarioLogadoService.getEmpresaIdLogada(), pageable));
 	}
 	
 	

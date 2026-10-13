@@ -255,8 +255,41 @@ public class UsuarioService {
 		return usuarioRepository.buscaPorLogin(login);
 	}
 
+	public UsuarioDto buscaPorLoginDto(String login, Long idEmpresa) {
+		Usuario usuario = usuarioRepository.buscaPorLogin(login);
+
+		if (usuario == null || usuario.getEmpresa() == null || !usuario.getEmpresa().getId().equals(idEmpresa)) {
+			throw new MsgApiException("Usuário não encontrado para a empresa logada.");
+		}
+
+		UsuarioDto dto = new UsuarioDto();
+		dto.setId(usuario.getId());
+		dto.setPessoa(usuario.getClienteFuncionario().getPessoa().getNome());
+		dto.setLiberado(usuario.isEnabled());
+		dto.setEmpresa(usuario.getEmpresa().getPessoa().getNome());
+		dto.setTipoClienteFuncionario(usuario.getClienteFuncionario().getTipoClienteFuncionario().name());
+		return dto;
+	}
+
 	public List<Usuario> buscaPorNome(String nome, Long idEmpresa) {
 		return usuarioRepository.buscaPorNome(nome, idEmpresa);
+	}
+
+	public List<UsuarioDto> buscaPorNomeDto(String nome, Long idEmpresa) {
+		List<Usuario> usuarios = usuarioRepository.buscaPorNome(nome, idEmpresa);
+		List<UsuarioDto> dtos = new java.util.ArrayList<UsuarioDto>();
+
+		for (Usuario usuario : usuarios) {
+			UsuarioDto dto = new UsuarioDto();
+			dto.setId(usuario.getId());
+			dto.setPessoa(usuario.getClienteFuncionario().getPessoa().getNome());
+			dto.setLiberado(usuario.isEnabled());
+			dto.setEmpresa(usuario.getEmpresa().getPessoa().getNome());
+			dto.setTipoClienteFuncionario(usuario.getClienteFuncionario().getTipoClienteFuncionario().name());
+			dtos.add(dto);
+		}
+
+		return dtos;
 	}
 
 	public boolean existePorNome(String nome, Long idEmpresa) {
@@ -284,6 +317,23 @@ public class UsuarioService {
 		return usuarioRepository.buscarPorIds(ids, empresaId);
 	}
 
+	public List<UsuarioDto> buscarPorIdsDto(Iterable<Long> ids, Long empresaId) {
+		List<Usuario> usuarios = usuarioRepository.buscarPorIds(ids, empresaId);
+		List<UsuarioDto> dtos = new java.util.ArrayList<UsuarioDto>();
+
+		for (Usuario usuario : usuarios) {
+			UsuarioDto dto = new UsuarioDto();
+			dto.setId(usuario.getId());
+			dto.setPessoa(usuario.getClienteFuncionario().getPessoa().getNome());
+			dto.setLiberado(usuario.isEnabled());
+			dto.setEmpresa(usuario.getEmpresa().getPessoa().getNome());
+			dto.setTipoClienteFuncionario(usuario.getClienteFuncionario().getTipoClienteFuncionario().name());
+			dtos.add(dto);
+		}
+
+		return dtos;
+	}
+
 	boolean existsById(Long id, Long empresaId) {
 		return usuarioRepository.existsById(id, empresaId);
 	}
@@ -294,15 +344,12 @@ public class UsuarioService {
 		List<UsuarioDto> dtos = new java.util.ArrayList<UsuarioDto>();
 		
 		for (Usuario usuario : usuarios) {
-			
 			UsuarioDto dto = new UsuarioDto();
-			
 			dto.setId(usuario.getId());
 			dto.setPessoa(usuario.getClienteFuncionario().getPessoa().getNome());
 			dto.setLiberado(usuario.isEnabled());
 			dto.setEmpresa(usuario.getEmpresa().getPessoa().getNome());
 			dto.setTipoClienteFuncionario(usuario.getClienteFuncionario().getTipoClienteFuncionario().name());
-			
 			dtos.add(dto);
 		}
 		
@@ -327,8 +374,6 @@ public class UsuarioService {
 		dto.setLiberado(usuario.get().isEnabled());
 		dto.setEmpresa(usuario.get().getEmpresa().getPessoa().getNome());
 		dto.setTipoClienteFuncionario(usuario.get().getClienteFuncionario().getTipoClienteFuncionario().name());
-		
-		
 		return dto;
 	}
 
@@ -351,15 +396,12 @@ public class UsuarioService {
 		List<UsuarioDto> dtos = new java.util.ArrayList<UsuarioDto>();
 		
 		for (Usuario usuario : usuarios) {
-			
 			UsuarioDto dto = new UsuarioDto();
-			
 			dto.setId(usuario.getId());
 			dto.setPessoa(usuario.getClienteFuncionario().getPessoa().getNome());
 			dto.setLiberado(usuario.isEnabled());
 			dto.setEmpresa(usuario.getEmpresa().getPessoa().getNome());
 			dto.setTipoClienteFuncionario(usuario.getClienteFuncionario().getTipoClienteFuncionario().name());
-			
 			dtos.add(dto);
 		}
 		

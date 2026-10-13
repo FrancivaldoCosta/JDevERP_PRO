@@ -54,7 +54,7 @@ public class ClienteFuncionarioService {
 		return clienteFuncionarioRepository.deleteAll(empresaID);
 	}
 
-	void deletarAllById(Iterable<Long> ids, Long empresaId) {
+	public void deletarAllById(Iterable<Long> ids, Long empresaId) {
 		clienteFuncionarioRepository.deletarAllById(ids, empresaId);
 	}
 
@@ -62,7 +62,7 @@ public class ClienteFuncionarioService {
 		return clienteFuncionarioRepository.buscarPorIds(ids, empresaId);
 	}
 
-	boolean existsById(Long id, Long empresaId) {
+	public boolean existsById(Long id, Long empresaId) {
 		return clienteFuncionarioRepository.existsById(id, empresaId);
 	}
 

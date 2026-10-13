@@ -3,7 +3,6 @@ package br.com.jdeverp.pro.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,7 +20,6 @@ import br.com.jdeverp.pro.dto.AlterarSenhaDTO;
 import br.com.jdeverp.pro.dto.LoginDTO;
 import br.com.jdeverp.pro.dto.TokenDTO;
 import br.com.jdeverp.pro.dto.UsuarioDto;
-import br.com.jdeverp.pro.model.Usuario;
 import br.com.jdeverp.pro.service.UsuarioLogadoService;
 import br.com.jdeverp.pro.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -77,6 +75,31 @@ public class UsuarioController {
 	public ResponseEntity<List<UsuarioDto>> listarUsuarios() {
 		return ResponseEntity.ok(usuarioService.listar(usuarioLogadoService.getEmpresaIdLogada()));
 	}
+
+	@GetMapping("/buscaPorNome/{nome}")
+	public ResponseEntity<List<UsuarioDto>> buscaPorNome(@PathVariable String nome) {
+		return ResponseEntity.ok(usuarioService.buscaPorNomeDto(nome, usuarioLogadoService.getEmpresaIdLogada()));
+	}
+
+	@GetMapping("/buscaPorLogin/{login}")
+	public ResponseEntity<UsuarioDto> buscaPorLogin(@PathVariable String login) {
+		return ResponseEntity.ok(usuarioService.buscaPorLoginDto(login, usuarioLogadoService.getEmpresaIdLogada()));
+	}
+
+	@GetMapping("/existePorNome/{nome}")
+	public ResponseEntity<Boolean> existePorNome(@PathVariable String nome) {
+		return ResponseEntity.ok(usuarioService.existePorNome(nome, usuarioLogadoService.getEmpresaIdLogada()));
+	}
+
+	@GetMapping("/existePorNomeDiferenteId/{id}/{nome}")
+	public ResponseEntity<Boolean> existePorNomeDiferenteId(@PathVariable("id") Long idUser, @PathVariable String nome) {
+		return ResponseEntity.ok(usuarioService.existePorNomeDiferenteId(idUser, nome, usuarioLogadoService.getEmpresaIdLogada()));
+	}
+
+	@GetMapping("/total")
+	public ResponseEntity<Long> totalUsuarios() {
+		return ResponseEntity.ok(usuarioService.total(usuarioLogadoService.getEmpresaIdLogada()));
+	}
 	
 	@GetMapping("/buscarPorId/{id}")
 	public ResponseEntity<UsuarioDto> buscarPorId(@PathVariable(required = true, value = "id") Long idUser) {
@@ -94,6 +117,16 @@ public class UsuarioController {
 		return ResponseEntity.ok("Usuario deletado com sucesso!");
 		
 				
+	}
+
+	@DeleteMapping("/deletarTodos")
+	public ResponseEntity<Long> deletarTodos() {
+		return ResponseEntity.ok(usuarioService.deleteAll(usuarioLogadoService.getEmpresaIdLogada()));
+	}
+
+	@PostMapping("/buscarPorIds")
+	public ResponseEntity<List<UsuarioDto>> buscarPorIds(@RequestBody List<Long> ids) {
+		return ResponseEntity.ok(usuarioService.buscarPorIdsDto(ids, usuarioLogadoService.getEmpresaIdLogada()));
 	}
 	
 	

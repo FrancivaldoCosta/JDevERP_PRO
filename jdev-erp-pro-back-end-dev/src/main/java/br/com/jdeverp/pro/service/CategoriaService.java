@@ -3,6 +3,8 @@ package br.com.jdeverp.pro.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.jdeverp.pro.exception.MsgApiException;
@@ -85,12 +87,12 @@ public class CategoriaService {
 		return categoriaRepository.buscaPorNome(nome, idEmpresa);
 	}
 
-	boolean existePorNome(String nome, Long idEmpresa) {
+	public boolean existePorNome(String nome, Long idEmpresa) {
 
 		return categoriaRepository.existePorNome(nome, idEmpresa);
 	}
 
-	boolean existePorNomeDiferenteId(Long id, String nome, Long idEmpresa) {
+	public boolean existePorNomeDiferenteId(Long id, String nome, Long idEmpresa) {
 		return categoriaRepository.existePorNomeDiferenteId(id, nome, idEmpresa);
 	}
 
@@ -102,6 +104,17 @@ public class CategoriaService {
 		
 		
 		categoriaRepository.deleteById(id, idEmpresa);
+	}
+
+	public List<Categoria> listarPaginado(Long empresaId, Pageable pageable) {
+		Page<Categoria> categorias = categoriaRepository.listarPaginado(empresaId, pageable);
+		List<Categoria> retorno = new java.util.ArrayList<Categoria>();
+
+		for (Categoria categoria : categorias) {
+			retorno.add(categoria);
+		}
+
+		return retorno;
 	}
 
 	/*
