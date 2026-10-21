@@ -12,20 +12,20 @@ public class UsuarioLogadoService {
 
 	public UsuarioAutenticado getUsuarioAutenticado() {
 		return (UsuarioAutenticado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
 	}
-	
+
 	public Usuario getUsuarioLogado() {
 		return getUsuarioAutenticado().getUsuario();
 	}
-	
+
 	public Empresa getEmpresaLogada() {
 		return getUsuarioLogado().getEmpresa();
 	}
-	
+
 	public Long getEmpresaIdLogada() {
 		return getEmpresaLogada().getId();
 	}
+	
 	
 	public Long getUsuarioLogadoId() {
 		return getUsuarioLogado().getId();
@@ -34,6 +34,5 @@ public class UsuarioLogadoService {
 	public boolean isAdmin() {
 		return getUsuarioLogado().idAdmin();
 	}
-	
-	
+
 }

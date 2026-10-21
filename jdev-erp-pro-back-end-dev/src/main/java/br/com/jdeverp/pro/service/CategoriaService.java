@@ -13,19 +13,13 @@ import br.com.jdeverp.pro.repository.CategoriaRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
-/*O QUE É O SERVICE*/
-/*Dentro do service voce pode criar infinitos métodos, gerar grafico, api de pagamento, gerar relatorio e etc*/
-
 @Service
 public class CategoriaService {
 
-	@Autowired /* Injeção de dependência */
+	@Autowired /* Injeção de depência */
 	private CategoriaRepository categoriaRepository;
-
-	/*
-	 * Posso escrever query customizadas e dinâmicas, mais complexas do que no
-	 * Repository
-	 */
+	
+	/*Posso escrever query customizadas e dinâmicas, mais complexas do que no Repository*/
 	@PersistenceContext
 	private EntityManager entityManager;
 	
@@ -34,48 +28,32 @@ public class CategoriaService {
 	private UsuarioLogadoService usuarioLogadoService;
 	
 	
-	
-	
 	public Categoria salvar(Categoria categoria) {
 		
 		if (this.existePorNome(categoria.getNome(), usuarioLogadoService.getEmpresaIdLogada())) {
 			throw new MsgApiException("Já existe uma categoria com o mesmo nome para a empresa logada.");
-			
 		}
 		
-		
-		categoria.setEmpresa(usuarioLogadoService.getEmpresaLogada()); 
-		
+		categoria.setEmpresa(usuarioLogadoService.getEmpresaLogada());
 		
 		return categoriaRepository.save(categoria);
 	}
-	
-	
-	
-	
 	
 	
 	public Categoria atualizar(Categoria categoria) {
 		
-		
-		if (categoria.getId() == null) {
+		if(categoria.getId() == null) {
 			throw new MsgApiException("Id da categoria não informado para atualizar.");
-			
 		}
 		
-		
-		if (this.existePorNomeDiferenteId(categoria.getId(), categoria.getNome(), usuarioLogadoService.getEmpresaIdLogada())) {
-			throw new MsgApiException("Já existe uma categoria com o mesmo nome desta que está sendo informada para atualizar, informe outro nome.");
-			
+		if (this.existePorNomeDiferenteId(categoria.getId(),  categoria.getNome(), usuarioLogadoService.getEmpresaIdLogada())) {
+			throw new MsgApiException("Já existe uma categoria com o mesmo nome desta que sendo informada para atualizar, informe outro nome.");
 		}
 		
-		
-		categoria.setEmpresa(usuarioLogadoService.getEmpresaLogada()); 
-		
+		categoria.setEmpresa(usuarioLogadoService.getEmpresaLogada());
 		
 		return categoriaRepository.save(categoria);
 	}
-	
 	
 
 	/* Os métodos do service serão chamador pelo Controller */
@@ -98,36 +76,40 @@ public class CategoriaService {
 
 	public void deleteById(Long id, Long idEmpresa) {
 		
-		if (!categoriaRepository.existsById(id, idEmpresa)) {
+		if(!categoriaRepository.existsById(id, idEmpresa)) {
 			throw new MsgApiException("Categoria não encontrada para a empresa logada, portanto não pode ser deletada.");
 		}
-		
 		
 		categoriaRepository.deleteById(id, idEmpresa);
 	}
 
-	public List<Categoria> listarPaginado(Long empresaId, Pageable pageable) {
-		Page<Categoria> categorias = categoriaRepository.listarPaginado(empresaId, pageable);
-		List<Categoria> retorno = new java.util.ArrayList<Categoria>();
-
-		for (Categoria categoria : categorias) {
-			retorno.add(categoria);
-		}
-
-		return retorno;
+	public Categoria buscarPorId(Long id, Long idEmpresa) {
+		return categoriaRepository.buscarPorId(id, idEmpresa).orElseThrow(() -> 
+			new MsgApiException("Categoria não encontrada para a empresa logada."));
 	}
 
-	/*
-	 * ====================dentro dos métodos do
-	 * service===============================
-	 */
+	public long total(Long idEmpresa) {
+		return categoriaRepository.total(idEmpresa);
+	}
 
-	// Verificar se está em uso
-	// Realizar um consulta com integração para saber se pode deletar
-	// Fazer copia e backup
-	// Fazer inumeras validações de regra de negocio
-	// Fazer validações
-	// Lançar exeções
-	// Escrever regras de negócio
+	public boolean existsById(Long id, Long idEmpresa) {
+		return categoriaRepository.existsById(id, idEmpresa);
+	}
+
+	public Page<Categoria> listarPaginado(Long idEmpresa, Pageable pageable) {
+		return categoriaRepository.listarPaginado(idEmpresa, pageable);
+	}
+
+	public List<Categoria> listarPaginadoDto(Long idEmpresa, Pageable pageable) {
+		
+		Page<Categoria> categorias = categoriaRepository.listarPaginado(idEmpresa, pageable);
+		List<Categoria> listaRetorno = new java.util.ArrayList<>();
+		
+		for (Categoria categoria : categorias) {
+			listaRetorno.add(categoria);
+		}
+		
+		return listaRetorno;		
+	}
 
 }

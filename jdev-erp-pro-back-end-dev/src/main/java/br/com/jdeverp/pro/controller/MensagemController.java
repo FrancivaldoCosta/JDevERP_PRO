@@ -10,9 +10,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,207 +21,228 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.jdeverp.pro.model.Mensagem;
 import br.com.jdeverp.pro.service.MensagemService;
 import br.com.jdeverp.pro.service.UsuarioLogadoService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/mensagem")
 public class MensagemController {
 
-	@Autowired
-	private MensagemService mensagemService;
+        @Autowired
+        private MensagemService mensagemService;
 
-	@Autowired
-	private UsuarioLogadoService usuarioLogadoService;
+        @Autowired
+        private UsuarioLogadoService usuarioLogadoService;
 
-	private Long empresa() {
-		return usuarioLogadoService.getEmpresaIdLogada();
-	}
+        @PostMapping("/salvar")
+        public ResponseEntity<Mensagem> salvar(@RequestBody @Valid Mensagem mensagem) {
+                return ResponseEntity.ok(mensagemService.salvar(mensagem));
+        }
 
-	// O conteúdo vai como query param por poder conter "/" e textos longos.
+        @PostMapping("/atualizar")
+        public ResponseEntity<Mensagem> atualizar(@RequestBody @Valid Mensagem mensagem) {
+                return ResponseEntity.ok(mensagemService.atualizar(mensagem));
+        }
 
-	@GetMapping("/listar")
-	public ResponseEntity<List<Mensagem>> listar() {
-		return ResponseEntity.ok(mensagemService.listar(empresa()));
-	}
+        @GetMapping("/listar")
+        public ResponseEntity<List<Mensagem>> listar() {
+                return ResponseEntity.ok(mensagemService.findAll(
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/findAll")
-	public ResponseEntity<List<Mensagem>> findAll() {
-		return ResponseEntity.ok(mensagemService.findAll(empresa()));
-	}
+        @GetMapping("/buscaPorConteudo/{conteudo}")
+        public ResponseEntity<List<Mensagem>> buscaPorConteudo(@PathVariable String conteudo) {
+                return ResponseEntity.ok(mensagemService.buscaPorConteudo(conteudo,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/buscarPorId/{id}")
-	public ResponseEntity<Mensagem> buscarPorId(@PathVariable("id") Long id) {
-		return mensagemService.buscarPorId(id, empresa())
-				.map(ResponseEntity::ok)
-				.orElse(ResponseEntity.notFound().build());
-	}
+        @GetMapping("/existePorConteudo/{conteudo}")
+        public ResponseEntity<Boolean> existePorConteudo(@PathVariable String conteudo) {
+                return ResponseEntity.ok(mensagemService.existePorConteudo(conteudo,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@PostMapping("/buscarPorIds")
-	public ResponseEntity<List<Mensagem>> buscarPorIds(@RequestBody List<Long> ids) {
-		return ResponseEntity.ok(mensagemService.buscarPorIds(ids, empresa()));
-	}
+        @GetMapping("/existePorConteudoDiferenteId/{id}/{conteudo}")
+        public ResponseEntity<Boolean> existePorConteudoDiferenteId(
+                        @PathVariable Long id, @PathVariable String conteudo) {
+                return ResponseEntity.ok(mensagemService.existePorConteudoDiferenteId(id, conteudo,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/buscaPorConteudo")
-	public ResponseEntity<List<Mensagem>> buscaPorConteudo(@RequestParam String conteudo) {
-		return ResponseEntity.ok(mensagemService.buscaPorConteudo(conteudo, empresa()));
-	}
+        @GetMapping("/listarTodos")
+        public ResponseEntity<List<Mensagem>> listarTodos() {
+                return ResponseEntity.ok(mensagemService.listar(
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/existePorConteudo")
-	public ResponseEntity<Boolean> existePorConteudo(@RequestParam String conteudo) {
-		return ResponseEntity.ok(mensagemService.existePorConteudo(conteudo, empresa()));
-	}
+        @GetMapping("/buscarPorId/{id}")
+        public ResponseEntity<Mensagem> buscarPorId(@PathVariable Long id) {
+                return mensagemService.buscarPorId(id, usuarioLogadoService.getEmpresaIdLogada())
+                                .map(ResponseEntity::ok)
+                                .orElseGet(() -> ResponseEntity.notFound().build());
+        }
 
-	@GetMapping("/existePorConteudoDiferenteId/{id}")
-	public ResponseEntity<Boolean> existePorConteudoDiferenteId(@PathVariable("id") Long id,
-			@RequestParam String conteudo) {
-		return ResponseEntity.ok(mensagemService.existePorConteudoDiferenteId(id, conteudo, empresa()));
-	}
+        @GetMapping("/existePorId/{id}")
+        public ResponseEntity<Boolean> existePorId(@PathVariable Long id) {
+                return ResponseEntity.ok(mensagemService.existsById(id,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/existsById/{id}")
-	public ResponseEntity<Boolean> existsById(@PathVariable("id") Long id) {
-		return ResponseEntity.ok(mensagemService.existsById(id, empresa()));
-	}
+        @PostMapping("/buscarPorIds")
+        public ResponseEntity<List<Mensagem>> buscarPorIds(@RequestBody Iterable<Long> ids) {
+                return ResponseEntity.ok(mensagemService.buscarPorIds(ids,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/total")
-	public ResponseEntity<Long> total() {
-		return ResponseEntity.ok(mensagemService.total(empresa()));
-	}
+        @GetMapping("/total")
+        public ResponseEntity<Long> total() {
+                return ResponseEntity.ok(mensagemService.total(
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/paginado")
-	public ResponseEntity<Page<Mensagem>> listarPaginado(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size,
-			@RequestParam(defaultValue = "id") String sort,
-			@RequestParam(defaultValue = "asc") String direction) {
+        @GetMapping("/paginado")
+        public ResponseEntity<Page<Mensagem>> listarPaginado(
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "10") int size,
+                        @RequestParam(defaultValue = "id") String sort,
+                        @RequestParam(defaultValue = "asc") String direction) {
+                Sort.Direction sortDirection = direction.equalsIgnoreCase("asc")
+                                ? Sort.Direction.ASC : Sort.Direction.DESC;
+                Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sort));
+                return ResponseEntity.ok(mensagemService.listarPaginado(
+                                usuarioLogadoService.getEmpresaIdLogada(), pageable));
+        }
 
-		Sort.Direction sortDirection = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-		Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sort));
+        @DeleteMapping("/deletar/{id}")
+        public ResponseEntity<String> deleteById(@PathVariable Long id) {
+                mensagemService.deleteById(id, usuarioLogadoService.getEmpresaIdLogada());
+                return ResponseEntity.ok("Mensagem deletada com sucesso.");
+        }
 
-		return ResponseEntity.ok(mensagemService.listarPaginado(empresa(), pageable));
-	}
+        @DeleteMapping("/deletarTodos")
+        public ResponseEntity<Long> deleteAll() {
+                return ResponseEntity.ok(mensagemService.deleteAll(
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@DeleteMapping("/deletar/{id}")
-	public ResponseEntity<String> deletePorId(@PathVariable("id") Long id) {
-		mensagemService.deleteById(id, empresa());
-		return ResponseEntity.ok("Mensagem deletada com sucesso.");
-	}
+        @DeleteMapping("/deletarTodosPorIds")
+        public ResponseEntity<Void> deletarAllById(@RequestBody Iterable<Long> ids) {
+                mensagemService.deletarAllById(ids,
+                                usuarioLogadoService.getEmpresaIdLogada());
+                return ResponseEntity.noContent().build();
+        }
 
-	@PostMapping("/deletarPorIds")
-	public ResponseEntity<String> deletarAllById(@RequestBody List<Long> ids) {
-		mensagemService.deletarAllById(ids, empresa());
-		return ResponseEntity.ok("Mensagens deletadas com sucesso.");
-	}
+        @GetMapping("/listarPorChamado/{idChamado}")
+        public ResponseEntity<List<Mensagem>> findAllByChamado(@PathVariable Long idChamado) {
+                return ResponseEntity.ok(mensagemService.findAllByChamado(idChamado,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@DeleteMapping("/deletarTodos")
-	public ResponseEntity<Long> deleteAll() {
-		return ResponseEntity.ok(mensagemService.deleteAll(empresa()));
-	}
+        @GetMapping("/buscaPorConteudoPorChamado/{idChamado}/{conteudo}")
+        public ResponseEntity<List<Mensagem>> buscaPorConteudoByChamado(
+                        @PathVariable Long idChamado, @PathVariable String conteudo) {
+                return ResponseEntity.ok(mensagemService.buscaPorConteudoByChamado(conteudo, idChamado,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	// ====================Métodos específicos para Chamado====================
+        @GetMapping("/existePorConteudoPorChamado/{idChamado}/{conteudo}")
+        public ResponseEntity<Boolean> existePorConteudoByChamado(
+                        @PathVariable Long idChamado, @PathVariable String conteudo) {
+                return ResponseEntity.ok(mensagemService.existePorConteudoByChamado(conteudo, idChamado,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/chamado/{idChamado}")
-	public ResponseEntity<List<Mensagem>> findAllByChamado(@PathVariable Long idChamado) {
-		return ResponseEntity.ok(mensagemService.findAllByChamado(idChamado, empresa()));
-	}
+        @GetMapping("/existePorConteudoDiferenteIdPorChamado/{id}/{idChamado}/{conteudo}")
+        public ResponseEntity<Boolean> existePorConteudoDiferenteIdByChamado(
+                        @PathVariable Long id, @PathVariable Long idChamado, @PathVariable String conteudo) {
+                return ResponseEntity.ok(mensagemService.existePorConteudoDiferenteIdByChamado(id, conteudo,
+                                idChamado, usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/chamado/{idChamado}/buscaPorConteudo")
-	public ResponseEntity<List<Mensagem>> buscaPorConteudoByChamado(@PathVariable Long idChamado,
-			@RequestParam String conteudo) {
-		return ResponseEntity.ok(mensagemService.buscaPorConteudoByChamado(conteudo, idChamado, empresa()));
-	}
+        @GetMapping("/totalPorChamado/{idChamado}")
+        public ResponseEntity<Long> countByChamado(@PathVariable Long idChamado) {
+                return ResponseEntity.ok(mensagemService.countByChamado(idChamado,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/chamado/{idChamado}/existePorConteudo")
-	public ResponseEntity<Boolean> existePorConteudoByChamado(@PathVariable Long idChamado,
-			@RequestParam String conteudo) {
-		return ResponseEntity.ok(mensagemService.existePorConteudoByChamado(conteudo, idChamado, empresa()));
-	}
+        @DeleteMapping("/deletarTodosPorChamado/{idChamado}")
+        public ResponseEntity<Void> deleteAllByChamado(@PathVariable Long idChamado) {
+                mensagemService.deleteAllByChamado(idChamado,
+                                usuarioLogadoService.getEmpresaIdLogada());
+                return ResponseEntity.noContent().build();
+        }
 
-	@GetMapping("/chamado/{idChamado}/existePorConteudoDiferenteId/{id}")
-	public ResponseEntity<Boolean> existePorConteudoDiferenteIdByChamado(@PathVariable Long idChamado,
-			@PathVariable("id") Long id, @RequestParam String conteudo) {
-		return ResponseEntity.ok(
-				mensagemService.existePorConteudoDiferenteIdByChamado(id, conteudo, idChamado, empresa()));
-	}
+        @DeleteMapping("/deletarPorChamado/{id}/{idChamado}")
+        public ResponseEntity<Void> deleteByIdAndChamado(
+                        @PathVariable Long id, @PathVariable Long idChamado) {
+                mensagemService.deleteByIdAndChamado(id, idChamado,
+                                usuarioLogadoService.getEmpresaIdLogada());
+                return ResponseEntity.noContent().build();
+        }
 
-	@GetMapping("/chamado/{idChamado}/total")
-	public ResponseEntity<Long> countByChamado(@PathVariable Long idChamado) {
-		return ResponseEntity.ok(mensagemService.countByChamado(idChamado, empresa()));
-	}
+        @GetMapping("/listarNaoLidas")
+        public ResponseEntity<List<Mensagem>> findAllNaoLidas() {
+                return ResponseEntity.ok(mensagemService.findAllNaoLidas(
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@DeleteMapping("/chamado/{idChamado}/deletarTodas")
-	public ResponseEntity<String> deleteAllByChamado(@PathVariable Long idChamado) {
-		mensagemService.deleteAllByChamado(idChamado, empresa());
-		return ResponseEntity.ok("Mensagens do chamado deletadas com sucesso.");
-	}
+        @GetMapping("/listarNaoLidasPorChamado/{idChamado}")
+        public ResponseEntity<List<Mensagem>> findAllNaoLidasByChamado(@PathVariable Long idChamado) {
+                return ResponseEntity.ok(mensagemService.findAllNaoLidasByChamado(idChamado,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@DeleteMapping("/chamado/{idChamado}/deletar/{id}")
-	public ResponseEntity<String> deleteByIdAndChamado(@PathVariable Long idChamado, @PathVariable("id") Long id) {
-		mensagemService.deleteByIdAndChamado(id, idChamado, empresa());
-		return ResponseEntity.ok("Mensagem deletada com sucesso.");
-	}
+        @GetMapping("/totalNaoLidasPorChamado/{idChamado}")
+        public ResponseEntity<Long> countNaoLidasByChamado(@PathVariable Long idChamado) {
+                return ResponseEntity.ok(mensagemService.countNaoLidasByChamado(idChamado,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	// ====================Status de Leitura====================
+        @PatchMapping("/atualizarLeitura/{id}/{lida}")
+        public ResponseEntity<Void> updateLida(@PathVariable Long id, @PathVariable Boolean lida) {
+                mensagemService.updateLida(id, lida, usuarioLogadoService.getEmpresaIdLogada());
+                return ResponseEntity.noContent().build();
+        }
 
-	@GetMapping("/naoLidas")
-	public ResponseEntity<List<Mensagem>> findAllNaoLidas() {
-		return ResponseEntity.ok(mensagemService.findAllNaoLidas(empresa()));
-	}
+        @GetMapping("/listarPorAtendente/{idAtendente}")
+        public ResponseEntity<List<Mensagem>> findAllByAtendente(@PathVariable Long idAtendente) {
+                return ResponseEntity.ok(mensagemService.findAllByAtendente(idAtendente,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/chamado/{idChamado}/naoLidas")
-	public ResponseEntity<List<Mensagem>> findAllNaoLidasByChamado(@PathVariable Long idChamado) {
-		return ResponseEntity.ok(mensagemService.findAllNaoLidasByChamado(idChamado, empresa()));
-	}
+        @GetMapping("/totalPorAtendente/{idAtendente}")
+        public ResponseEntity<Long> countByAtendente(@PathVariable Long idAtendente) {
+                return ResponseEntity.ok(mensagemService.countByAtendente(idAtendente,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/chamado/{idChamado}/totalNaoLidas")
-	public ResponseEntity<Long> countNaoLidasByChamado(@PathVariable Long idChamado) {
-		return ResponseEntity.ok(mensagemService.countNaoLidasByChamado(idChamado, empresa()));
-	}
+        @GetMapping("/listarPorCliente/{idCliente}")
+        public ResponseEntity<List<Mensagem>> findAllByCliente(@PathVariable Long idCliente) {
+                return ResponseEntity.ok(mensagemService.findAllByCliente(idCliente,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@PutMapping("/lida/{id}")
-	public ResponseEntity<String> updateLida(@PathVariable("id") Long id,
-			@RequestParam(defaultValue = "true") Boolean lida) {
-		mensagemService.updateLida(id, lida, empresa());
-		return ResponseEntity.ok("Status de leitura atualizado com sucesso.");
-	}
+        @GetMapping("/totalPorCliente/{idCliente}")
+        public ResponseEntity<Long> countByCliente(@PathVariable Long idCliente) {
+                return ResponseEntity.ok(mensagemService.countByCliente(idCliente,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	// ====================Atendente====================
+        @GetMapping("/listarPorChamadoEAtendente/{idChamado}/{idAtendente}")
+        public ResponseEntity<List<Mensagem>> findAllByChamadoAndAtendente(
+                        @PathVariable Long idChamado, @PathVariable Long idAtendente) {
+                return ResponseEntity.ok(mensagemService.findAllByChamadoAndAtendente(idChamado, idAtendente,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/atendente/{idAtendente}")
-	public ResponseEntity<List<Mensagem>> findAllByAtendente(@PathVariable Long idAtendente) {
-		return ResponseEntity.ok(mensagemService.findAllByAtendente(idAtendente, empresa()));
-	}
+        @GetMapping("/listarNaoLidasPorAtendente/{idAtendente}")
+        public ResponseEntity<List<Mensagem>> findAllNaoLidasByAtendente(@PathVariable Long idAtendente) {
+                return ResponseEntity.ok(mensagemService.findAllNaoLidasByAtendente(idAtendente,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@GetMapping("/atendente/{idAtendente}/total")
-	public ResponseEntity<Long> countByAtendente(@PathVariable Long idAtendente) {
-		return ResponseEntity.ok(mensagemService.countByAtendente(idAtendente, empresa()));
-	}
-
-	@GetMapping("/atendente/{idAtendente}/naoLidas")
-	public ResponseEntity<List<Mensagem>> findAllNaoLidasByAtendente(@PathVariable Long idAtendente) {
-		return ResponseEntity.ok(mensagemService.findAllNaoLidasByAtendente(idAtendente, empresa()));
-	}
-
-	// ====================Cliente====================
-
-	@GetMapping("/cliente/{idCliente}")
-	public ResponseEntity<List<Mensagem>> findAllByCliente(@PathVariable Long idCliente) {
-		return ResponseEntity.ok(mensagemService.findAllByCliente(idCliente, empresa()));
-	}
-
-	@GetMapping("/cliente/{idCliente}/total")
-	public ResponseEntity<Long> countByCliente(@PathVariable Long idCliente) {
-		return ResponseEntity.ok(mensagemService.countByCliente(idCliente, empresa()));
-	}
-
-	@GetMapping("/cliente/{idCliente}/naoLidas")
-	public ResponseEntity<List<Mensagem>> findAllNaoLidasByCliente(@PathVariable Long idCliente) {
-		return ResponseEntity.ok(mensagemService.findAllNaoLidasByCliente(idCliente, empresa()));
-	}
-
-	// ====================Combinados====================
-
-	@GetMapping("/chamado/{idChamado}/atendente/{idAtendente}")
-	public ResponseEntity<List<Mensagem>> findAllByChamadoAndAtendente(@PathVariable Long idChamado,
-			@PathVariable Long idAtendente) {
-		return ResponseEntity.ok(mensagemService.findAllByChamadoAndAtendente(idChamado, idAtendente, empresa()));
-	}
-
+        @GetMapping("/listarNaoLidasPorCliente/{idCliente}")
+        public ResponseEntity<List<Mensagem>> findAllNaoLidasByCliente(@PathVariable Long idCliente) {
+                return ResponseEntity.ok(mensagemService.findAllNaoLidasByCliente(idCliente,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 }

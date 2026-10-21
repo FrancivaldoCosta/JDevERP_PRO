@@ -26,87 +26,98 @@ public class JwtService {
 
 	/**
 	 * Retorna a chave secreta para assinatura do token JWT.
-	 * 
+	 *
 	 * @return A chave secreta.
 	 */
-	
 	private SecretKey getKey() {
-		return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); /*O Pf: Colocou StandardCharsets.ISO_8859_1*/
+		return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.ISO_8859_1));
 	}
-	
+
 	/**
-	 * Extrai as claims do token JWT.
-	 * 
+	 * Extrai as claims (informações) do token JWT.
+	 *
 	 * @param token O token JWT.
 	 * @return As claims extraídas do token.
 	 */
-	
 	public Claims extrairClaims(String token) {
 		return Jwts.parser()
-				.verifyWith(getKey())
-				.build()
-				.parseSignedClaims(token)
-				.getPayload();
+				   .verifyWith(getKey())
+				   .build()
+				   .parseSignedClaims(token)
+				   .getPayload();
 	}
 	
 	/**
 	 * Gera um token JWT para o usuário fornecido.
-	 * 
+	 *
 	 * @param usuario O usuário para o qual o token será gerado.
 	 * @return O token JWT gerado.
 	 */
-	
 	public String gerarToken(Usuario usuario) {
 		return Jwts.builder()
-				.subject(usuario.getLogin())
-				.claim("usuarioId", usuario.getId())
-				.claim("empresaId", usuario.getEmpresa().getId())
-				.claim("login", usuario.getLogin())
-				.issuedAt(new Date())
-				.expiration(new Date(System.currentTimeMillis() + expiration))
-				.signWith(getKey())
-				.compact();
+				   .subject(usuario.getLogin())
+				   .claim("usuarioId", usuario.getId())
+				   .claim("empresaId", usuario.getEmpresa().getId())
+				   .claim("login", usuario.getLogin())
+				   .issuedAt(new Date())
+				   .expiration(new Date(System.currentTimeMillis() + expiration))
+				   .signWith(getKey())
+				   .compact();
 	}
 	
 	/**
 	 * Extrai o ID do empresaId do token JWT.
-	 * 
-	 * @return O ID do empresaId
+	 *
+	 * @return O ID do empresaId.
 	 */
-	
-	public Long extrairEmpresaId() {
-		 Claims claims  = extrairClaims(getToken());
-		 return claims.get("empresaId", Long.class);
-	}
-	
-	
-	/**
-	 * Extrai o ID do empresaId do token JWT.
-	 * 
-	 * @return O ID do empresaId
-	 */
-	
-	
-	public Long extrairEmpresaId(String token) {
-		Claims claims  = extrairClaims(token);
+	public Long extrairEmpresaId(){
+		
+		Claims claims = extrairClaims(getToken());
+		
 		return claims.get("empresaId", Long.class);
+		
+	}
+	
+	
+	/**
+	 * Extrai o ID do empresaId do token JWT.
+	 *
+	 * @return O ID do empresaId.
+	 */
+	public Long extrairEmpresaId(String token){
+		
+		Claims claims = extrairClaims(token);
+		
+		return claims.get("empresaId", Long.class);
+		
+	}
+	
+	public Long extrairUsuarioId(String token){
+		
+		Claims claims = extrairClaims(token);
+		
+		return claims.get("usuarioId", Long.class);
+		
 	}
 	
 	/**
-	 * Extrai o ID do usuarioId do token JWT.
-	 * 
-	 * @return O ID do usuarioId
+	 * Extrai o ID do usuário do token JWT.
+	 *
+	 * @return O ID do usuário.
 	 */
-	
-	public Long extrairUsuarioId() {
-		 Claims claims  = extrairClaims(getToken());
-		 return claims.get("usuarioId", Long.class);
+	public Long extrairUsuarioId(){
+		
+		Claims claims = extrairClaims(getToken());
+		
+		return claims.get("usuarioId", Long.class);
+		
 	}
 	
 	
 	public String extrairLogin(String token) {
-		 return extrairClaims(token).getSubject();
+		return extrairClaims(token).getSubject();
 	}
+	
 	
 	
 	public boolean validarToken(String token) {
@@ -118,15 +129,16 @@ public class JwtService {
 		}
 		
 		Jwts.parser().verifyWith(getKey())
-			.build()
-			.parseSignedClaims(token);
+		    .build()
+		    .parseSignedClaims(token);
 		
 		return true;
 		
-		} catch (Exception e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 			throw new MsgApiException("Token de acesso do usuário é inválido.");
 		}
+		
 	}
 	
 	
@@ -134,5 +146,6 @@ public class JwtService {
 	private String getToken() {
 		return (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
 	}
+	
 
 }

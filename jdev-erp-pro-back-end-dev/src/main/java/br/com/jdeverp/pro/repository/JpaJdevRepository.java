@@ -10,28 +10,23 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
 public interface JpaJdevRepository<T, ID> extends JpaRepository<T, ID> {
-	
-	/* Mais -> Nossos métodos customizados  e genéricos */
-	
+
+	/* Mais -> Nossos métodos customizados e genéricos */
+
 	Page<T> listarPaginado(Long empresaId, Pageable pageable);
-	
+
 	long total(Long empresaId);
-	
-	Optional<T> buscarPorId(ID id, Long empresaId);  
-	
+
+	Optional<T> buscarPorId(ID id, Long empresaId);
+
 	List<T> listar(Long empresaId);
-	
+
 	boolean existsById(ID id, Long empresaId);
-	
-	
-	List<T> buscarPorIds(Iterable<ID> ids, Long empresaId); 
-	
-	
+
+	List<T> buscarPorIds(Iterable<ID> ids, Long empresaId);
+
 	void deletarAllById(Iterable<ID> ids, Long empresaId);
-	
-	
+
 	long deleteAll(Long empresaID);
-	
-	
-	
+
 }

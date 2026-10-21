@@ -15,50 +15,71 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.jdeverp.pro.model.RoleUsuario;
 import br.com.jdeverp.pro.service.RoleUsuarioService;
 import br.com.jdeverp.pro.service.UsuarioLogadoService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/roleUsuario")
 public class RoleUsuarioController {
 
-	@Autowired
-	private RoleUsuarioService roleUsuarioService;
+        @Autowired
+        private RoleUsuarioService roleUsuarioService;
 
-	@Autowired
-	private UsuarioLogadoService usuarioLogadoService;
+        @Autowired
+        private UsuarioLogadoService usuarioLogadoService;
 
-	@PostMapping("/salvar")
-	public ResponseEntity<RoleUsuario> salvar(@RequestBody RoleUsuario roleUsuario) {
-		return ResponseEntity.ok(roleUsuarioService.salvar(roleUsuario));
-	}
+        @PostMapping("/salvar")
+        public ResponseEntity<RoleUsuario> salvar(@RequestBody @Valid RoleUsuario roleUsuario) {
+                return ResponseEntity.ok(roleUsuarioService.salvar(roleUsuario));
+        }
+        
+        
+        @PostMapping("/atualizar")
+        public ResponseEntity<RoleUsuario> atualizar(@RequestBody @Valid RoleUsuario roleUsuario) {
+                return ResponseEntity.ok(roleUsuarioService.atualizar(roleUsuario));
+        }
 
-	@GetMapping("/usuario/{idUsuario}")
-	public ResponseEntity<List<RoleUsuario>> findAllByUsuario(@PathVariable Long idUsuario) {
-		return ResponseEntity.ok(roleUsuarioService.findAllByUsuario(idUsuario,
-				usuarioLogadoService.getEmpresaIdLogada()));
-	}
+        @GetMapping("/listar")
+        public ResponseEntity<List<RoleUsuario>> listar() {
+                return ResponseEntity.ok(roleUsuarioService.listar());
+        }
 
-	@GetMapping("/role/{idRole}")
-	public ResponseEntity<List<RoleUsuario>> findAllByRoleAndEmpresa(@PathVariable Long idRole) {
-		return ResponseEntity.ok(roleUsuarioService.findAllByRoleAndEmpresa(idRole,
-				usuarioLogadoService.getEmpresaIdLogada()));
-	}
+        @GetMapping("/buscarPorId/{id}")
+        public ResponseEntity<RoleUsuario> buscarPorId(@PathVariable Long id) {
+                return roleUsuarioService.buscarPorId(id)
+                                .map(ResponseEntity::ok)
+                                .orElseGet(() -> ResponseEntity.notFound().build());
+        }
 
-	@GetMapping("/existePorUsuarioERole/{idUsuario}/{idRole}")
-	public ResponseEntity<Boolean> existePorUsuarioERole(@PathVariable Long idUsuario, @PathVariable Long idRole) {
-		return ResponseEntity.ok(roleUsuarioService.existePorUsuarioERole(idUsuario, idRole,
-				usuarioLogadoService.getEmpresaIdLogada()));
-	}
+        @GetMapping("/listarPorUsuario/{idUsuario}")
+        public ResponseEntity<List<RoleUsuario>> findAllByUsuario(@PathVariable Long idUsuario) {
+                return ResponseEntity.ok(roleUsuarioService.findAllByUsuario(idUsuario,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@DeleteMapping("/deletar/{id}")
-	public ResponseEntity<String> deletePorId(@PathVariable("id") Long id) {
-		roleUsuarioService.deleteById(id);
-		return ResponseEntity.ok("Role do usuário deletada com sucesso.");
-	}
+        @GetMapping("/listarPorRole/{idRole}")
+        public ResponseEntity<List<RoleUsuario>> findAllByRoleAndEmpresa(@PathVariable Long idRole) {
+                return ResponseEntity.ok(roleUsuarioService.findAllByRoleAndEmpresa(idRole,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
-	@DeleteMapping("/deletarPorUsuarioERole/{idUsuario}/{idRole}")
-	public ResponseEntity<String> deleteByUsuarioAndRole(@PathVariable Long idUsuario, @PathVariable Long idRole) {
-		roleUsuarioService.deleteByUsuarioAndRole(idUsuario, idRole, usuarioLogadoService.getEmpresaIdLogada());
-		return ResponseEntity.ok("Associação role-usuário deletada com sucesso.");
-	}
+        @GetMapping("/existePorUsuarioERole/{idUsuario}/{idRole}")
+        public ResponseEntity<Boolean> existePorUsuarioERole(
+                        @PathVariable Long idUsuario, @PathVariable Long idRole) {
+                return ResponseEntity.ok(roleUsuarioService.existePorUsuarioERole(idUsuario, idRole,
+                                usuarioLogadoService.getEmpresaIdLogada()));
+        }
 
+        @DeleteMapping("/deletar/{id}")
+        public ResponseEntity<String> deleteById(@PathVariable Long id) {
+                roleUsuarioService.deleteById(id);
+                return ResponseEntity.ok("Role do usuário deletado com sucesso.");
+        }
+
+        @DeleteMapping("/deletarPorUsuarioERole/{idUsuario}/{idRole}")
+        public ResponseEntity<String> deleteByUsuarioAndRole(
+                        @PathVariable Long idUsuario, @PathVariable Long idRole) {
+                roleUsuarioService.deleteByUsuarioAndRole(idUsuario, idRole,
+                                usuarioLogadoService.getEmpresaIdLogada());
+                return ResponseEntity.ok("Role do usuário deletado com sucesso.");
+        }
 }

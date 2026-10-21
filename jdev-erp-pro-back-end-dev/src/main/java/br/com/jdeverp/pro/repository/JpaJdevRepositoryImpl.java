@@ -26,7 +26,7 @@ import jakarta.persistence.TypedQuery;
 public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID>
 		implements JpaJdevRepository<T, ID> {
 
-	private static final String MSG_BLOQUEIO_QUERY = "Use ou crie um método que tenha o empresa.id incluída para a separação dos dados por empresa e ativar o multitenent.";
+	private static final String MSG_BLOQUEIO_QUERY = "Use ou crie um método que tenha o empresa.id incluída para a separação dos dados por empresa e ativar o multitanent.";
 	private final Class<T> domainClass; /* Classe model ou entidade */
 	private final EntityManager entityManager; /* É o nucleo da persistencia do JPA */
 	private final boolean multiEmpresa;
@@ -103,55 +103,54 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 
 	@Override
 	public Page<T> listarPaginado(Long empresaId, Pageable pageable) {
-
-		String entidade = domainClass.getSimpleName();
-
-		String jpql = "from " + entidade;
-
+		
+		
+		String jpql = "from " + domainClass.getSimpleName();
+		
 		if (multiEmpresa) {
-			jpql += " Where empresa.id = :empresaId";
+			jpql += " where empresa.id = :empresaId";
 		}
-
-//TRECHO QUE DEU ERRO
-
+		
+		
 		if (pageable.getSort().isSorted()) {
 			jpql += " order by ";
 
 			List<String> orders = new ArrayList<String>();
+
 			for (Sort.Order order : pageable.getSort()) {
 				orders.add(order.getProperty() + " " + order.getDirection().name());
-
 			}
 
-			jpql += String.join(", ", orders);
+			jpql += String.join(",", orders);
 		}
-
+		
 		TypedQuery<T> query = entityManager.createQuery(jpql, domainClass);
-
-		if (multiEmpresa) {
+		
+		if(multiEmpresa) {
 			query.setParameter("empresaId", empresaId);
 		}
-
-		List<T> lista = query.setFirstResult((int) pageable.getOffset()).setMaxResults(pageable.getPageSize())
-				.getResultList();
+		
+		List<T> lista = query.setFirstResult((int)pageable.getOffset())
+				             .setMaxResults(pageable.getPageSize())
+				             .getResultList();
 
 		return new PageImpl<T>(lista, pageable, total(empresaId));
 	}
 
+	/*Total de registros cadastrados de acordo com a empresa e a tabela/classe/entidade/model atual*/
 	@Override
 	public long total(Long empresaId) {
-
-		String entidade = domainClass.getSimpleName();
-
-		String jpql = "select count(*) from " + entidade;
-
+		
+		
+		String jpql = "select count(*) from " + domainClass.getSimpleName();
+		
 		if (multiEmpresa) {
-			jpql += " Where empresa.id = :empresaId";
+			jpql += " where empresa.id = :empresaId";
 		}
-
+		
 		TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
-
-		if (multiEmpresa) {
+		
+		if(multiEmpresa) {
 			query.setParameter("empresaId", empresaId);
 		}
 
@@ -164,51 +163,49 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		} catch (NoSuchFieldException e) {
 			return false;
 		}
-
 	}
 
 	@Override
 	public Optional<T> buscarPorId(ID id, Long empresaId) {
-
+	
 		String jpql = "from " + domainClass.getSimpleName() + " where id = :id";
-
+		
 		if (multiEmpresa) {
 			jpql += " and empresa.id = :empresaId";
 		}
-
+		
 		TypedQuery<T> query = entityManager.createQuery(jpql, domainClass);
 		query.setParameter("id", id);
 
 		if (multiEmpresa) {
 			query.setParameter("empresaId", empresaId);
 		}
-
+		
 		return query.getResultStream().findFirst();
+		
 	}
 
 	@Override
 	public List<T> listar(Long empresaId) {
-
-
+		
 		String jpql = "from " + domainClass.getSimpleName();
-
+		
 		if (multiEmpresa) {
 			jpql += " where empresa.id = :empresaId";
 		}
-
+		
 		TypedQuery<T> query = entityManager.createQuery(jpql, domainClass);
 
 		if (multiEmpresa) {
 			query.setParameter("empresaId", empresaId);
 		}
-
-		return query.getResultList();
 		
+		return query.getResultList();
 	}
 
 	@Override
 	public boolean existsById(ID id, Long empresaId) {
-
+		
 		String jpql = "select 1 from " + domainClass.getSimpleName() + " e where e.id = :id";
 		
 		if (multiEmpresa) {
@@ -218,43 +215,43 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		TypedQuery<Integer> query = entityManager.createQuery(jpql, Integer.class);
 		query.setParameter("id", id);
 		
-		if (multiEmpresa) {
-			query.setParameter("empresaId", empresaId);
-		}
+		 if (multiEmpresa) {
+		        query.setParameter("empresaId", empresaId);
+		 }
+		 
+		 query.setMaxResults(1);
 		
-		query.setMaxResults(1);
-				
 		return !query.getResultList().isEmpty();
 	}
 
 	@Override
 	public List<T> buscarPorIds(Iterable<ID> ids, Long empresaId) {
-
-		if (IterableUtils.isEmpty(ids)) {
+		
+		if(IterableUtils.isEmpty(ids)) {
 			return Collections.emptyList();
-
 		}
-
+		
 		String jpql = "from " + domainClass.getSimpleName() + " where id in :ids";
-
+		
 		if (multiEmpresa) {
 			jpql += " and empresa.id = :empresaId";
 		}
-
+		
 		TypedQuery<T> query = entityManager.createQuery(jpql, domainClass);
 		query.setParameter("ids", ids);
 
 		if (multiEmpresa) {
-			query.setParameter("empresa.id", empresaId);
+			query.setParameter("empresaId", empresaId);
 		}
-
+		
 		return query.getResultList();
 	}
 
 	@Override
 	public void deletarAllById(Iterable<ID> ids, Long empresaId) {
-
+		
 		String jpql = "delete from " + domainClass.getSimpleName() + " where id in :ids";
+		
 		if (multiEmpresa) {
 			jpql += " and empresa.id = :empresaId";
 		}
@@ -263,11 +260,10 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		query.setParameter("ids", ids);
 
 		if (multiEmpresa) {
-			query.setParameter("empresa.id", empresaId);
+			query.setParameter("empresaId", empresaId);
 		}
 
-		query.executeUpdate();
-
+		 query.executeUpdate();
 	}
 
 	@Override
@@ -281,7 +277,7 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		Query query = entityManager.createQuery(jpql);
 
 		if (multiEmpresa) {
-			query.setParameter("empresa.id", empresaID);
+			query.setParameter("empresaId", empresaID);
 		}
 
 		return query.executeUpdate();
@@ -294,200 +290,167 @@ public class JpaJdevRepositoryImpl<T, ID extends Serializable> extends SimpleJpa
 		return super.findAll();
 	}
 	
-	
+	@Override
+	public List<T> findAll(Sort sort) {
+		validar("findAll");
+		return super.findAll(sort);
+	}
 	
 	@Override
-    public List<T> findAll(Sort sort) {
-	validar("findAll");
-	return super.findAll(sort);
-    }
-	
-	
-	@Override
-	    public Page<T> findAll(Pageable pageable) {
+	public Page<T> findAll(Pageable pageable) {
 		validar("findAll");
 		return super.findAll(pageable);
-	    }
-	
+	}
 	
 	@Override
-	    public <S extends T> List<S> findAll(Example<S> example) {
+	public <S extends T> List<S> findAll(Example<S> example) {
 		validar("findAll");
 		return super.findAll(example);
-	    }
+	}
 	
 	
 	@Override
-	    public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
+	public <S extends T> Page<S> findAll(Example<S> example, Pageable pageable) {
 		validar("findAll");
 		return super.findAll(example, pageable);
-	    }
-	
-	
+	}
+
 	@Override
-	    public <S extends T> List<S> findAll(Example<S> example, Sort sort) {
+	public <S extends T> List<S> findAll(Example<S> example, Sort sort) {
 		validar("findAll");
 		return super.findAll(example, sort);
-	    }
+	}
 	
 	
 	@Override
-	    public List<T> findAll(PredicateSpecification<T> spec) {
+	public List<T> findAll(PredicateSpecification<T> spec) {
 		validar("findAll");
 		return super.findAll(spec);
-	    }
+	}
 	
 	
 	@Override
-	    public List<T> findAll(Specification<T> spec) {
+	public List<T> findAll(Specification<T> spec) {
 		validar("findAll");
 		return super.findAll(spec);
-	    }
-	
-	
-	
+	}
+
 	@Override
-	    public Page<T> findAll(Specification<T> spec, Pageable pageable) {
+	public Page<T> findAll(Specification<T> spec, Pageable pageable) {
 		validar("findAll");
 		return super.findAll(spec, pageable);
-	    }
-	
-	
+	}
+
 	@Override
-	    public List<T> findAll(Specification<T> spec, Sort sort) {
+	public List<T> findAll(Specification<T> spec, Sort sort) {
 		validar("findAll");
 		return super.findAll(spec, sort);
-	    }
-	
-	
+	}
+
 	@Override
-	    public Page<T> findAll(Specification<T> spec, Specification<T> countSpec, Pageable pageable) {
+	public Page<T> findAll(Specification<T> spec, Specification<T> countSpec, Pageable pageable) {
 		validar("findAll");
 		return super.findAll(spec, countSpec, pageable);
-	    }
-	
-	
-	
+	}
+
 	@Override
-	    public Optional<T> findById(ID id) {
+	public Optional<T> findById(ID id) {
 		validar("findById");
 		return super.findById(id);
-	    }
+	}
 
-	
 	@Override
-	    public List<T> findAllById(Iterable<ID> ids) {
+	public List<T> findAllById(Iterable<ID> ids) {
 		validar("findAllById");
 		return super.findAllById(ids);
-	    }
+	}
 	
 	
 	@Override
-	    public T getReferenceById(ID id) {
+	public T getReferenceById(ID id) {
 		validar("getReferenceById");
 		return super.getReferenceById(id);
-	    }
-	
+	}
 	
 	@Override
-	    public boolean existsById(ID id) {
+	public boolean existsById(ID id) {
 		validar("existsById");
 		return super.existsById(id);
-	    }
-	
+	}
 	
 	@Override
-	    public long count() {
+	public long count() {
 		validar("count");
 		return super.count();
-	    }
+	}
 
-	
 	@Override
-	    public <S extends T> long count(Example<S> example) {
+	public <S extends T> long count(Example<S> example) {
 		validar("count");
 		return super.count(example);
-	    }
-	
-	
+	}
+
 	@Override
-	    public long count(PredicateSpecification<T> spec) {
+	public long count(PredicateSpecification<T> spec) {
 		validar("count");
 		return super.count(spec);
-	    }
-	
-	
+	}
+
 	@Override
-	    public long count(Specification<T> spec) {
-		// TODO Auto-generated method stub
+	public long count(Specification<T> spec) {
+		validar("count");
 		return super.count(spec);
-	    }
-	
+	}
 	
 	
 	@Override
-	    public void delete(T entity) {
+	public void delete(T entity) {
 		validar("delete");
 		super.delete(entity);
-	    }
-	
-	
+	}
+
 	@Override
-	    public void deleteAll() {
-		validar("deleteAll");
+	public void deleteAll() {
+		validar("delete");
 		super.deleteAll();
-	    }
-	
+	}
 	
 	@Override
-	    public void deleteById(ID id) {
+	public void deleteById(ID id) {
 		validar("deleteById");
 		super.deleteById(id);
-	    }
-	
+	}
 	
 	@Override
-	    public <S extends T> Optional<S> findOne(Example<S> example) {
+	public <S extends T> Optional<S> findOne(Example<S> example) {
 		validar("findOne");
 		return super.findOne(example);
-	    }
-	
+	}
 	
 	@Override
-	    public <S extends T> boolean exists(Example<S> example) {
+	public <S extends T> boolean exists(Example<S> example) {
 		validar("exists");
 		return super.exists(example);
-	    }
-	
+	}
 	
 	@Override
-	    public void deleteAllInBatch() {
+	public void deleteAllInBatch() {
 		validar("deleteAllInBatch");
 		super.deleteAllInBatch();
-	    }
-	
+	}
 	
 	@Override
-	    public <S extends T, R> R findBy(Example<S> example, Function<FetchableFluentQuery<S>, R> queryFunction) {
+	public <S extends T, R> R findBy(Example<S> example, Function<FetchableFluentQuery<S>, R> queryFunction) {
 		validar("findBy");
 		return super.findBy(example, queryFunction);
-	    }
-	
-	
-	
-	
-	
-	
-	
-	
+	}
 
 	private void validar(String metodo) {
-
+		
 		if (multiEmpresa) {
 			throw new UnsupportedOperationException("o método: " + metodo + " não pode ser usado. " + MSG_BLOQUEIO_QUERY);
 		}
-		
-		
 	}
+	
 
 }

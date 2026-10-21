@@ -31,11 +31,13 @@ public interface UsuarioRepository extends JpaJdevRepository<Usuario, Long> {
 								+ " like unaccent(upper(concat('%', trim(:nome) ,'%')))")
 	List<Usuario> buscaPorNome(@Param("nome") String nome, @Param("idEmpresa") Long idEmpresa);
 	
-	/*existePorLogin*/
+	
+	/*Retorna true se já existir usuário com o mesmo nome da pessoa para a mesma empresa, no caso não podemos deixar salvar para não ficar repetido no banco de dados*/
 	@Query("select count(u.id) > 0 from Usuario u where u.empresa.id = :idEmpresa "
 			+ " and unaccent(upper(trim(u.login))) "
 			+ " = unaccent(upper(trim(:login)))")
 	boolean existePorLogin(@Param("login") String login, @Param("idEmpresa") Long idEmpresa);
+	
 	
 	
 	@Query("select count(u.id) > 0 from Usuario u where u.empresa.id = :idEmpresa "
@@ -43,8 +45,6 @@ public interface UsuarioRepository extends JpaJdevRepository<Usuario, Long> {
 	boolean existePorPessoa(@Param("idPessoa") Long idPessoa, @Param("idEmpresa") Long idEmpresa);
 	
 	
-	
-	/*Retorna true se já existir usuário com o mesmo nome da pessoa para a mesma empresa, no caso não podemos deixar salvar para não ficar repetido no banco de dados*/
 	@Query("select count(u.id) > 0 from Usuario u where u.empresa.id = :idEmpresa "
 			+ " and unaccent(upper(trim(u.clienteFuncionario.pessoa.nome))) "
 			+ " = unaccent(upper(trim(:nome)))")
@@ -60,7 +60,8 @@ public interface UsuarioRepository extends JpaJdevRepository<Usuario, Long> {
 	/*Verifica se existe outro usuário no banco de dados com o mesmo nome da pessoa mas ID diferentes da que está tentando atualizar*/
 	@Query("select count(u.id) > 0 from Usuario u where u.empresa.id = :idEmpresa "
 			+ " and u.clienteFuncionario.pessoa.id = :pessoaId and u.id <> :usuarioId")
-	boolean existeOutroUsuarioComPessoa(@Param("pessoaId") Long pessoaId, @Param("usuarioId") Long usuarioId, @Param("idEmpresa") Long idEmpresa);	
+    boolean existeOutroUsuarioComPessoa(@Param("pessoaId") Long pessoaId, @Param("usuarioId") Long usuarioId, @Param("idEmpresa") Long idEmpresa);	
+	
 	
 	/*Delete de um usuário de uma determinada empresa*/
 	@Transactional
@@ -68,24 +69,23 @@ public interface UsuarioRepository extends JpaJdevRepository<Usuario, Long> {
 	@Query("delete from Usuario u where u.empresa.id = :idEmpresa and u.id = :id")
 	void deleteById(@Param("id") Long id, @Param("idEmpresa") Long idEmpresa);
 	
-	
 	@Transactional
 	@Modifying(flushAutomatically = true, clearAutomatically = true)
 	@Query("update Usuario set tokenSessao = :token where id = :id and empresa.id = :idEmpresa")
 	void updateTokenSessaoLogin(@Param("id") Long id, @Param("token") String token, @Param("idEmpresa") Long idEmpresa);
-
 	
-	@Query(value = """
+	@Query(value ="""
 			SELECT CASE
-			 WHEN COUNT(*) > 0 THEN true 
-			 ELSE false 
-		    END
-		    			FROM Usuario u
-		    			WHERE u.token_sessao = :token
-		    			AND u.empresa_id = :idEmpresa
-		    			AND u.id = :idUsuario
-		    						""", nativeQuery = true)
+	           WHEN COUNT(*) > 0 THEN TRUE
+	           ELSE FALSE
+	       END
+			FROM usuario u
+			WHERE u.token_sessao = :token
+			  AND u.empresa_id = :idEmpresa
+			  AND u.id = :idUsuario;
+		   """, nativeQuery = true)
 	boolean existsByTokenParaUser(@Param("token") String token,
-		                                  @Param("idUsuario") Long idUsuario,
-		                                  @Param("idEmpresa") Long idEmpresa);
+										 @Param("idUsuario") Long idUsuario, 
+										 @Param("idEmpresa") Long idEmpresa);
+
 }

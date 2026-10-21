@@ -20,12 +20,8 @@ public interface ClienteFuncionarioRepository extends JpaJdevRepository<ClienteF
     List<ClienteFuncionario> findAll(@Param("idEmpresa") Long idEmpresa);
     
     
-    
     @Query("select c from ClienteFuncionario c where c.pessoa.id = :idPessoa and c.empresa.id = :idEmpresa")
     ClienteFuncionario findByPessoa(@Param("idPessoa") Long idPessoa, @Param("idEmpresa") Long idEmpresa);
-    
-    
-    
 
 
     /*Busca por partes ou nome completo da pessoa relacionada e da empresa passada por parametro*/
@@ -52,8 +48,6 @@ public interface ClienteFuncionarioRepository extends JpaJdevRepository<ClienteF
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("delete from ClienteFuncionario c where c.empresa.id = :idEmpresa and c.id = :id")
     void deleteById(@Param("id") Long id, @Param("idEmpresa") Long idEmpresa);
-    
-    
     
     @Transactional
     @Modifying(flushAutomatically = true, clearAutomatically = true)
