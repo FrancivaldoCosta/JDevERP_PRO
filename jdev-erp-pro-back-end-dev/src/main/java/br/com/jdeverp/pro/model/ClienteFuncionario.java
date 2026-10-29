@@ -52,7 +52,6 @@ public class ClienteFuncionario {
 	private TipoClienteFuncionario tipoClienteFuncionario;
 	
 	
-	@NotNull(message = "O usuario deve ser informanda para criar o cadastro")
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "usuario_id", nullable = true, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "usuario_fk"))
 	private Usuario usuario;
@@ -64,7 +63,6 @@ public class ClienteFuncionario {
 	
 	
 	
-	@NotNull(message = "Empresa deve ser informada corretamente")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
 	private Empresa empresa;

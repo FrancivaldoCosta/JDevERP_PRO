@@ -312,6 +312,8 @@ public class UsuarioService {
 			dto.setLiberado(usuario.isEnabled());
 			dto.setEmpresa(usuario.getEmpresa().getPessoa().getNome());
 			dto.setTipoClienteFuncionario(usuario.getClienteFuncionario().getTipoClienteFuncionario().name());
+			dto.setPessoaId(usuario.getClienteFuncionario().getPessoa().getId());
+			dto.setClienteFuncionarioId(usuario.getClienteFuncionario().getId());
 			
 			dtos.add(dto);
 		}

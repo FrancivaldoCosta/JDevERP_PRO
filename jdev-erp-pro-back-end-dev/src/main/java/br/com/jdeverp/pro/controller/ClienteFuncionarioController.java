@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.jdeverp.pro.dto.ClienteFuncionarioDTO;
 import br.com.jdeverp.pro.model.ClienteFuncionario;
 import br.com.jdeverp.pro.service.ClienteFuncionarioService;
 import br.com.jdeverp.pro.service.UsuarioLogadoService;
@@ -33,7 +34,7 @@ public class ClienteFuncionarioController {
         private UsuarioLogadoService usuarioLogadoService;
 
         @PostMapping("/salvar")
-        public ResponseEntity<ClienteFuncionario> salvar(
+        public ResponseEntity<ClienteFuncionarioDTO> salvar(
                         @RequestBody @Valid ClienteFuncionario clienteFuncionario) {
                 return ResponseEntity.ok(clienteFuncionarioService.salvar(clienteFuncionario));
         }
@@ -44,11 +45,10 @@ public class ClienteFuncionarioController {
                 return ResponseEntity.ok(clienteFuncionarioService.atualizar(clienteFuncionario));
         }
 
-        @GetMapping("/listar")
-        public ResponseEntity<List<ClienteFuncionario>> listar() {
-                return ResponseEntity.ok(clienteFuncionarioService.listar(
-                                usuarioLogadoService.getEmpresaIdLogada()));
-        }
+		@GetMapping("/listar")
+		public ResponseEntity<List<ClienteFuncionarioDTO>> listar() {
+			return ResponseEntity.ok(clienteFuncionarioService.listar(usuarioLogadoService.getEmpresaIdLogada()));
+		}
 
         @GetMapping("/findAll")
         public ResponseEntity<List<ClienteFuncionario>> findAll() {

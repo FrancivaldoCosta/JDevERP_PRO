@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.jdeverp.pro.dto.ClienteFuncionarioDTO;
 import br.com.jdeverp.pro.exception.MsgApiException;
 import br.com.jdeverp.pro.model.ClienteFuncionario;
 import br.com.jdeverp.pro.model.Pessoa;
@@ -41,8 +42,27 @@ public class ClienteFuncionarioService {
 	@Autowired
 	private UsuarioLogadoService usuarioLogadoService;
 
-	public ClienteFuncionario salvar(ClienteFuncionario clienteFuncionario ) {
-		return clienteFuncionarioRepository.saveAndFlush(clienteFuncionario);
+	public ClienteFuncionarioDTO salvar(ClienteFuncionario clienteFuncionario ) {
+		
+		if (clienteFuncionarioRepository.existeParaPessoa(clienteFuncionario.getPessoa().getId(), usuarioLogadoService.getEmpresaIdLogada())) {
+			throw new MsgApiException("Já existe um cliente/funcionário cadastrado para a pessoa informada.");
+			
+		}
+		
+		
+		clienteFuncionario.setEmpresa(usuarioLogadoService.getEmpresaLogada());
+		clienteFuncionario = clienteFuncionarioRepository.saveAndFlush(clienteFuncionario);
+		
+		ClienteFuncionarioDTO dto = new ClienteFuncionarioDTO();
+		
+		dto.setId(clienteFuncionario.getId());
+		dto.setTipoClienteFuncionario(clienteFuncionario.getTipoClienteFuncionario().name());
+		dto.setUsuarioId(clienteFuncionario.getUsuario() != null ? clienteFuncionario.getUsuario().getId() : null);
+		dto.setPessoaId(clienteFuncionario.getPessoa().getId());
+		dto.setNomePessoa(clienteFuncionario.getPessoa().getNome());
+		dto.setEmpresaId(clienteFuncionario.getEmpresa().getId());
+		
+		return dto;
 	} 
 
 	public ClienteFuncionario atualizar(ClienteFuncionario clienteFuncionario) {
@@ -136,8 +156,25 @@ public class ClienteFuncionarioService {
 		return clienteFuncionarioRepository.existsById(id, empresaId);
 	}
 
-	public List<ClienteFuncionario> listar(Long empresaId) {
-		return clienteFuncionarioRepository.listar(empresaId);
+	public List<ClienteFuncionarioDTO> listar(Long empresaId) {
+		
+		List<ClienteFuncionarioDTO> clienteFuncionarioDTOs = new ArrayList<ClienteFuncionarioDTO>();
+		List<ClienteFuncionario> clienteFuncionarios = clienteFuncionarioRepository.listar(empresaId);
+		
+		for (ClienteFuncionario clienteFuncionario : clienteFuncionarios) {
+			ClienteFuncionarioDTO dto = new ClienteFuncionarioDTO();
+			
+			dto.setId(clienteFuncionario.getId());
+			dto.setTipoClienteFuncionario(clienteFuncionario.getTipoClienteFuncionario().name());
+			dto.setUsuarioId(clienteFuncionario.getUsuario() != null ? clienteFuncionario.getUsuario().getId() : null);
+			dto.setPessoaId(clienteFuncionario.getPessoa().getId());
+			dto.setNomePessoa(clienteFuncionario.getPessoa().getNome());
+			dto.setEmpresaId(clienteFuncionario.getEmpresa().getId());
+			
+			clienteFuncionarioDTOs.add(dto);
+		}
+		
+		return clienteFuncionarioDTOs;
 	}
 
 	public Optional<ClienteFuncionario> buscarPorId(Long id, Long empresaId) {
