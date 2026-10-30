@@ -54,7 +54,6 @@ public class ClienteFuncionarioService {
 		clienteFuncionario = clienteFuncionarioRepository.saveAndFlush(clienteFuncionario);
 		
 		ClienteFuncionarioDTO dto = new ClienteFuncionarioDTO();
-		
 		dto.setId(clienteFuncionario.getId());
 		dto.setTipoClienteFuncionario(clienteFuncionario.getTipoClienteFuncionario().name());
 		dto.setUsuarioId(clienteFuncionario.getUsuario() != null ? clienteFuncionario.getUsuario().getId() : null);
@@ -64,8 +63,19 @@ public class ClienteFuncionarioService {
 		
 		return dto;
 	} 
+	
+	
+	
+	public ClienteFuncionario salvarClienteFunUser(ClienteFuncionario clienteFuncionario) {
 
-	public ClienteFuncionario atualizar(ClienteFuncionario clienteFuncionario) {
+		return clienteFuncionarioRepository.saveAndFlush(clienteFuncionario);
+
+	}
+	
+	
+	
+
+	public ClienteFuncionarioDTO atualizar(ClienteFuncionario clienteFuncionario) {
 		if (clienteFuncionario.getId() == null) {
 			throw new MsgApiException("Id do cliente/funcionário não informado para atualizar.");
 		}
@@ -92,7 +102,18 @@ public class ClienteFuncionarioService {
 		clienteFuncionario.setEmpresa(usuarioLogadoService.getEmpresaLogada());
 		clienteFuncionario.setPessoa(pessoa);
 		clienteFuncionario.setUsuario(usuario);
-		return clienteFuncionarioRepository.saveAndFlush(clienteFuncionario);
+		
+		clienteFuncionario = clienteFuncionarioRepository.saveAndFlush(clienteFuncionario);
+		ClienteFuncionarioDTO dto = new ClienteFuncionarioDTO();
+		dto.setId(clienteFuncionario.getId());
+		dto.setTipoClienteFuncionario(clienteFuncionario.getTipoClienteFuncionario().name());
+		dto.setUsuarioId(clienteFuncionario.getUsuario() != null ? clienteFuncionario.getUsuario().getId() : null);
+		dto.setPessoaId(clienteFuncionario.getPessoa().getId());
+		dto.setNomePessoa(clienteFuncionario.getPessoa().getNome());
+		dto.setEmpresaId(clienteFuncionario.getEmpresa().getId());
+		
+		
+		return dto;
 	}
 
 	public List<ClienteFuncionario> findAll(Long idEmpresa) {

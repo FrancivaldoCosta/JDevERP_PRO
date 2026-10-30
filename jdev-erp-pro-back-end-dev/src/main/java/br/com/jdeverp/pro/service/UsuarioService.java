@@ -146,7 +146,7 @@ public class UsuarioService {
 		}
 		
 		clienteFuncionario.setUsuario(usuario);
-		clienteFuncionarioService.salvar(clienteFuncionario);
+		clienteFuncionarioService.salvarClienteFunUser(clienteFuncionario);
 		
 		usuarioDto.setSenha("***Ocultada***");/*Não pode expor a senha na rede*/
 		usuarioDto.setId(usuario.getId());

@@ -40,7 +40,7 @@ public class ClienteFuncionarioController {
         }
 
         @PostMapping("/atualizar")
-        public ResponseEntity<ClienteFuncionario> atualizar(
+        public ResponseEntity<ClienteFuncionarioDTO> atualizar(
                         @RequestBody @Valid ClienteFuncionario clienteFuncionario) {
                 return ResponseEntity.ok(clienteFuncionarioService.atualizar(clienteFuncionario));
         }
@@ -50,11 +50,6 @@ public class ClienteFuncionarioController {
 			return ResponseEntity.ok(clienteFuncionarioService.listar(usuarioLogadoService.getEmpresaIdLogada()));
 		}
 
-        @GetMapping("/findAll")
-        public ResponseEntity<List<ClienteFuncionario>> findAll() {
-                return ResponseEntity.ok(clienteFuncionarioService.findAll(
-                                usuarioLogadoService.getEmpresaIdLogada()));
-        }
 
         @GetMapping("/buscaPorNome/{nome}")
         public ResponseEntity<List<ClienteFuncionario>> buscaPorNome(@PathVariable String nome) {
