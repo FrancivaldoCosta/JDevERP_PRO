@@ -29,32 +29,26 @@ import lombok.Data;
 public class Chamado {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_chamado")	
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_chamado")
 	private Long id;
-	
 	
 	@NotNull(message = "Título do chamado deve ser informado")
 	@Column(nullable = false)
 	private String titulo;
 	
-	
 	@NotNull(message = "Descrição do chamado deve ser informado")
 	@Column(nullable = false)
 	private String descricao;
 	
-	
 	@NotNull(message = "Tipo do chamado deve ser informado")
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private TipoChamado tipoChamado;
-	
+	private TipoChamado tipoChamado;;
 	
 	@NotNull(message = "Prioridade do chamado deve ser informado")
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private PrioridadeChamado prioridadeChamado;
-	
-	
 	
 	@NotNull(message = "Status do chamado deve ser informado")
 	@Enumerated(EnumType.STRING)
@@ -66,31 +60,45 @@ public class Chamado {
 	private LocalDate dataAbertura;
 	
 	private LocalDate dataFechamento;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "aberto_user_id", 
+            nullable = false,
+            foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, 
+                  name = "aberto_user_fk"))
+    private Usuario abertoUser;
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fechado_user_id", 
+            nullable = true,
+            foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, 
+                  name = "fechado_user_fk"))
+    private Usuario fechadoUser;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "aberto_user_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "aberto_user_fk"))
-	private Usuario abertoUser;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "atendente_id", 
+            nullable = false,
+            foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, 
+                  name = "atendente_fk"))
+    private Usuario atendente;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fechado_user_id", nullable = true, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "fechado_user_fk"))
-	private Usuario fechadoUser;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cliente_id", 
+            nullable = false,
+            foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, 
+                  name = "cliente_fk"))
+    private Usuario cliente;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "atendente_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "atendente_fk"))
-	private Usuario atendente;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "cliente_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "cliente_fk"))
-	private Usuario cliente;
-	
-	
-	@NotNull(message = "Empresa deve ser informada corretamente")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
-	private Empresa empresa;
+    @NotNull(message = "Empresa deve ser informada corretamente")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "empresa_id", 
+            nullable = false,
+            foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, 
+                  name = "empresa_fk"))
+    private Empresa empresa;
 
 }
