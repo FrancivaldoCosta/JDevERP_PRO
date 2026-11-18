@@ -1,40 +1,8 @@
-2026-11-09 14:35:35.329 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - Starting JDevERPPROApplication using Java 25.0.4.1 with PID 31648 (C:\Users\franc\OneDrive\DEV\CursoJDevERP PRO - Spring Boot e Angular\Git\JDevERP_PRO\jdev-erp-pro-back-end-dev\target\classes started by franc in C:\Users\franc\OneDrive\DEV\CursoJDevERP PRO - Spring Boot e Angular\Git\JDevERP_PRO\jdev-erp-pro-back-end-dev)
-2026-11-09 14:35:35.349 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - The following 1 profile is active: "dev"
-2026-11-09 14:35:38.985 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-11-09 14:35:38.986 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.21]
-2026-11-09 14:35:40.520 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Starting...
-2026-11-09 14:35:40.831 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool - Added connection org.postgresql.jdbc.PgConnection@30a62a5b
-2026-11-09 14:35:40.833 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Start completed.
-2026-11-09 14:35:46.716 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - Started JDevERPPROApplication in 12.175 seconds (process running for 13.246)
-2026-11-09 14:41:23.812 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - Starting JDevERPPROApplication using Java 25.0.4.1 with PID 25204 (C:\Users\franc\OneDrive\DEV\CursoJDevERP PRO - Spring Boot e Angular\Git\JDevERP_PRO\jdev-erp-pro-back-end-dev\target\classes started by franc in C:\Users\franc\OneDrive\DEV\CursoJDevERP PRO - Spring Boot e Angular\Git\JDevERP_PRO\jdev-erp-pro-back-end-dev)
-2026-11-09 14:41:23.818 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - The following 1 profile is active: "dev"
-2026-11-09 14:41:26.591 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-11-09 14:41:26.592 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.21]
-2026-11-09 14:41:27.878 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Starting...
-2026-11-09 14:41:28.154 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool - Added connection org.postgresql.jdbc.PgConnection@6b0ba697
-2026-11-09 14:41:28.156 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Start completed.
-2026-11-09 14:41:33.294 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - Started JDevERPPROApplication in 10.176 seconds (process running for 10.851)
-2026-11-09 14:42:21.627 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - Starting JDevERPPROApplication using Java 25.0.4.1 with PID 12364 (C:\Users\franc\OneDrive\DEV\CursoJDevERP PRO - Spring Boot e Angular\Git\JDevERP_PRO\jdev-erp-pro-back-end-dev\target\classes started by franc in C:\Users\franc\OneDrive\DEV\CursoJDevERP PRO - Spring Boot e Angular\Git\JDevERP_PRO\jdev-erp-pro-back-end-dev)
-2026-11-09 14:42:21.636 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - The following 1 profile is active: "dev"
-2026-11-09 14:42:24.855 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-11-09 14:42:24.855 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.21]
-2026-11-09 14:42:26.072 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Starting...
-2026-11-09 14:42:26.297 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool - Added connection org.postgresql.jdbc.PgConnection@1e7cfd49
-2026-11-09 14:42:26.300 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Start completed.
-2026-11-09 14:43:25.047 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - Started JDevERPPROApplication in 64.354 seconds (process running for 65.08)
-2026-11-09 14:44:10.328 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - Starting JDevERPPROApplication using Java 25.0.4.1 with PID 19176 (C:\Users\franc\OneDrive\DEV\CursoJDevERP PRO - Spring Boot e Angular\Git\JDevERP_PRO\jdev-erp-pro-back-end-dev\target\classes started by franc in C:\Users\franc\OneDrive\DEV\CursoJDevERP PRO - Spring Boot e Angular\Git\JDevERP_PRO\jdev-erp-pro-back-end-dev)
-2026-11-09 14:44:10.335 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - The following 1 profile is active: "dev"
-2026-11-09 14:44:13.870 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-11-09 14:44:13.871 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.21]
-2026-11-09 14:44:15.408 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Starting...
-2026-11-09 14:44:15.713 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool - Added connection org.postgresql.jdbc.PgConnection@1e7cfd49
-2026-11-09 14:44:15.717 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Start completed.
-2026-11-09 14:45:35.074 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - Started JDevERPPROApplication in 85.558 seconds (process running for 86.374)
-2026-11-09 14:46:04.803 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - Starting JDevERPPROApplication using Java 25.0.4.1 with PID 18512 (C:\Users\franc\OneDrive\DEV\CursoJDevERP PRO - Spring Boot e Angular\Git\JDevERP_PRO\jdev-erp-pro-back-end-dev\target\classes started by franc in C:\Users\franc\OneDrive\DEV\CursoJDevERP PRO - Spring Boot e Angular\Git\JDevERP_PRO\jdev-erp-pro-back-end-dev)
-2026-11-09 14:46:04.806 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - The following 1 profile is active: "dev"
-2026-11-09 14:46:07.630 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-11-09 14:46:07.631 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.21]
-2026-11-09 14:46:09.669 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Starting...
-2026-11-09 14:46:09.966 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool - Added connection org.postgresql.jdbc.PgConnection@b2da3a5
-2026-11-09 14:46:09.970 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Start completed.
-2026-11-09 14:46:15.479 [main] INFO  b.c.j.pro.app.JDevERPPROApplication - Started JDevERPPROApplication in 11.513 seconds (process running for 12.13)
+2026-11-18 00:54:00.134 [main] INFO  b.c.j.p.contexto.TestContextoSpring - Starting TestContextoSpring using Java 25.0.4.1 with PID 50748 (started by franc in C:\Users\franc\OneDrive\DEV\CursoJDevERP PRO - Spring Boot e Angular\Git\JDevERP_PRO\jdev-erp-pro-back-end-dev)
+2026-11-18 00:54:00.147 [main] INFO  b.c.j.p.contexto.TestContextoSpring - The following 1 profile is active: "dev"
+2026-11-18 00:54:04.695 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Starting...
+2026-11-18 00:54:05.037 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool - Added connection org.postgresql.jdbc.PgConnection@788a0513
+2026-11-18 00:54:05.040 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Start completed.
+2026-11-18 00:54:12.284 [main] INFO  b.c.j.p.contexto.TestContextoSpring - Started TestContextoSpring in 12.622 seconds (process running for 14.467)
+2026-11-18 00:54:14.283 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Shutdown initiated...
+2026-11-18 00:54:14.292 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool - Shutdown completed.

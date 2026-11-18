@@ -1,0 +1,61 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn -v)",
+      "Bash(mvn --version)",
+      "Bash(mvn compile*)",
+      "Bash(mvn test*)",
+      "Bash(mvn package*)",
+      "Bash(mvn verify*)",
+      "Bash(mvn clean*)",
+      "Bash(mvn -q compile*)",
+      "Bash(mvn -q test*)",
+      "Bash(mvn dependency:tree*)",
+      "Bash(java -version)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(git branch)",
+      "Bash(git branch -a)",
+      "Bash(git branch -v*)",
+      "Bash(git branch --show-current)",
+      "Bash(git branch --list*)",
+      "Bash(ls*)",
+      "Bash(pwd)",
+      "Bash(wc *)",
+      "Bash(tree*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(./src/main/resources/application-prod.properties)",
+      "Read(**/application-prod.properties)",
+      "Read(**/application-prod.yml)",
+      "Read(**/application-prod.yaml)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.jks)",
+      "Read(**/*.p12)",
+      "Read(**/*.pfx)",
+      "Read(**/*.keystore)",
+      "Bash(cat *application-prod*)",
+      "Bash(type *application-prod*)",
+      "Bash(git push*)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean*)",
+      "Bash(rm -rf*)",
+      "Bash(rm -fr*)",
+      "Bash(rm -r -f*)"
+    ],
+    "ask": [
+      "Bash(git commit*)",
+      "Bash(docker *)",
+      "Bash(docker-compose *)",
+      "Bash(psql*)",
+      "Bash(mvn spring-boot:run*)"
+    ]
+  }
+}
