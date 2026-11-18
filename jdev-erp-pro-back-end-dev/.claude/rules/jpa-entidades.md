@@ -16,8 +16,7 @@ paths:
 - Enums com `@Enumerated(EnumType.STRING)`, construtor com `descricao` e `getDescricao()`.
 - Textos longos: `@Column(columnDefinition = "text")`.
 - Datas de negócio em `LocalDate`, preenchidas no service (`LocalDate.now()`). Não há auditoria (`createdAt`/`updatedAt`) no projeto.
-- Mensagens de Bean Validation em português, no atributo `message`.
-- Toda mudança de entidade altera o schema via `ddl-auto=update`: verifique se é só adição (seguro) ou se exige script SQL (ver `CLAUDE.md`).
+- Mudança de entidade altera o schema via `ddl-auto=update`: só adição é segura; o resto exige script SQL.
 
 ## Repositories
 - JPQL em `@Query` com parâmetros `@Param` nomeados (`:idEmpresa`); nunca concatene entrada do usuário no JPQL.

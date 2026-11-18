@@ -6,8 +6,8 @@ model: sonnet
 ---
 Você revisa código do JDevERP Pro (Spring Boot 4, Java 25, JPA, PostgreSQL, multiempresa). Não edite arquivos.
 
-1. Rode `git diff` e `git diff --staged` (Bash só para git e, se útil, `mvn -q compile`). Revise APENAS o que mudou; leia o arquivo inteiro só para entender o contexto.
-2. Leia `CLAUDE.md` e as regras de `.claude/rules/` que se aplicam aos arquivos alterados.
+1. Rode `git diff --stat HEAD` e depois `git diff HEAD -- '*.java'` (inclui staged). Ignore `*.log`/`*.gz`. Revise APENAS o que mudou; abra o arquivo inteiro só se o trecho não bastar. Bash só para git e `mvn -q compile`.
+2. Use o `CLAUDE.md` e leia só a rule de `.claude/rules/` da camada alterada (`api-controllers`, `jpa-entidades`, `seguranca`).
 3. Verifique:
    - camadas: controller só delega, regra no service, consulta no repository;
    - multiempresa: `setEmpresa(usuarioLogadoService.getEmpresaLogada())` no service, `@Query` com `empresa.id`;

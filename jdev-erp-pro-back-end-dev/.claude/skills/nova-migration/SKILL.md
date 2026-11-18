@@ -18,5 +18,5 @@ Contexto: não há ferramenta de migration. O Hibernate aplica `ddl-auto=update`
    - `IF EXISTS`/`IF NOT EXISTS` quando possível.
 6. Ajuste a entidade para ficar coerente com o script (nomes de coluna, constraints, nullable).
 7. Nunca edite um script já existente em `docs/sql/`; crie outro.
-8. Rode os testes que usam essas entidades (`mvn test -Dtest=...`). Não execute o SQL no banco; me entregue o comando para rodar.
+8. Se mexeu em entidade: `mvn -q compile` e os testes que a usam (`mvn -q test -Dtest=...`). Não execute o SQL no banco; me entregue o comando para rodar.
 9. Para modelagem mais complexa, delegue ao subagente `especialista-banco`.

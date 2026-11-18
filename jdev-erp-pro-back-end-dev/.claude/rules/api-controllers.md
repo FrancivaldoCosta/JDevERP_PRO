@@ -15,6 +15,6 @@ paths:
 - Mapeamento entidade↔DTO: manual, no service (ver `UsuarioService`, `EmpresaService`). Não há MapStruct nem classe mapper.
 - DTOs: classe simples com Lombok `@Getter @Setter` (ou `@Data`); relações viram `xxxId` (`Long`) e nome descritivo (`pessoaNome`/`nomePessoa`); enums como `String` (`.name()`).
 - Paginação: `GET /paginado` com `@RequestParam(defaultValue)` `page=0`, `size=10`, `sort=id`, `direction=asc`; monte `PageRequest.of(page, size, Sort.by(dir, sort))` e devolva `Page<T>`. Valide `sort` contra as propriedades da entidade.
-- Erros: lance `MsgApiException` no service. Não monte resposta de erro no controller; o `GlobalExceptionHandler` converte para `ResponseApi` `{localDateTime, status, error, message, path}`.
+- Não monte resposta de erro no controller: o `GlobalExceptionHandler` converte exceções em `ResponseApi` `{localDateTime, status, error, message, path}`.
 - "Não encontrado" hoje sai como 400 (`MsgApiException` padrão). Para 404, use `new MsgApiException(msg, HttpStatus.NOT_FOUND)`.
 - Novos tipos de exceção: adicione um `@ExceptionHandler` em `GlobalExceptionHandler` seguindo o mesmo formato e chamando `logException`.
